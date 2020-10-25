@@ -368,6 +368,7 @@ declare const styles: {
   readonly 'progress-bar': string;
   readonly 'progress-bar__icon': string;
   readonly 'icon--stop': string;
+  readonly 'icon--error': string;
   readonly 'progress-bar__fill': string;
   readonly 'progress-bar__fill__wrapper': string;
   readonly 'torrent--is-stopped': string;
@@ -410,7 +411,6 @@ declare const styles: {
   readonly 'sortable-list__item--is-dragging': string;
   readonly 'sortable-list__item--is-locked': string;
   readonly 'sortable-list__item--is-preview': string;
-  readonly 'icon--error': string;
   readonly 'icon--lock': string;
   readonly 'sortable-list__content': string;
   readonly 'sortable-list__content__wrapper': string;
