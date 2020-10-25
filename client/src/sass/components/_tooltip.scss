@@ -1,4 +1,4 @@
-$tooltip-background: #0f151c;
+$tooltip-background: darken($white, 0.2);
 $tooltip-background--error: $red;
 $tooltip-foreground: lighten(#7189a8, 3%);
 $tooltip-foreground--error: #fff;
@@ -32,6 +32,7 @@ $tooltip-anchor-offset: $tooltip-arrow-offset + $tooltip-arrow-border-width;
 
   &__content {
     background: $tooltip-background;
+    border: $black 1px solid;
     border-radius: $tooltip-border-radius;
     color: $tooltip-foreground;
     font-size: $tooltip-font-size;
@@ -48,7 +49,7 @@ $tooltip-anchor-offset: $tooltip-arrow-offset + $tooltip-arrow-border-width;
     }
 
     &:after {
-      border-color: $tooltip-background;
+      border-color: $black;
       border-style: solid;
       border-width: $tooltip-arrow-border-width;
       content: '';

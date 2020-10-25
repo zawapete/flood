@@ -51,7 +51,7 @@
 
     &:active,
     &:focus {
-      background-color: rgba($blue--soft, 0.15);
+      background: $input--inverse--background;
       color: $input--inverse--foreground--active;
       border-color: $blue;
       box-shadow: form--element--box-shadow--active($blue);

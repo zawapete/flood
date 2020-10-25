@@ -9,15 +9,15 @@ $red: #f34570;
 $red--alpha--light: rgba($red, 0.1);
 $red--alpha--medium: rgba($red, 0.2);
 
-$blue: #349cf4;
+$blue: #000;
 $blue--light: lighten($blue, 7%);
 $blue--lighter: lighten($blue, 40%);
 $blue--soft: rgba($blue, 0.05);
 $blue--hard: harden($blue, 1.5);
 $blue--darker: darken($blue, 20%);
 
-$light-blue: #e9eef2;
-$dark-blue: #1d2938;
+$light-blue: #eeeeee;
+$dark-blue: #222222;
 
 $green: #39ce83;
 $green--light: lighten($green, 7%);
@@ -52,7 +52,7 @@ $another-grey: #3a4553;
 $background: $dark-blue;
 $foreground: #53718a;
 
-$sidebar--background: $darkest-grey--hard;
+$sidebar--background: harden($white, 0.4);
 $sidebar--foreground: #526780;
 $main-content--background: $light-blue;
 
@@ -68,4 +68,4 @@ $textbox--active--border: $blue;
 $textbox--active--foreground: $blue;
 $textbox--active--placeholder: $textbox--placeholder;
 
-$table--heading--color: #abbac7;
+$table--heading--color: #000;

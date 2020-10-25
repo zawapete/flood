@@ -26,6 +26,7 @@
       font-weight: 700;
 
       .badge {
+        border: $black 1px solid;
         @include theme('background', 'sidebar-filter--count--background--active');
         @include theme('color', 'sidebar-filter--count--foreground--active');
       }
@@ -47,6 +48,7 @@
   }
 
   .badge {
+    border: $black 1px solid;
     @include theme('background', 'sidebar-filter--count--background');
     @include theme('color', 'sidebar-filter--count--foreground');
   }

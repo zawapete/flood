@@ -367,13 +367,13 @@ declare const styles: {
   readonly 'priority-meter--level-3': string;
   readonly 'progress-bar': string;
   readonly 'progress-bar__icon': string;
-  readonly 'torrent--is-seeding': string;
-  readonly 'torrent--is-stopped': string;
-  readonly 'torrent--has-error': string;
-  readonly 'torrent--is-checking': string;
-  readonly 'torrent--is-selected': string;
+  readonly 'icon--stop': string;
   readonly 'progress-bar__fill': string;
   readonly 'progress-bar__fill__wrapper': string;
+  readonly 'torrent--is-stopped': string;
+  readonly 'torrent--has-error': string;
+  readonly 'torrent--is-selected': string;
+  readonly 'torrent--is-checking': string;
   readonly 'candy-stripe': string;
   readonly 'os-theme-thin': string;
   readonly 'os-scrollbar-horizontal': string;

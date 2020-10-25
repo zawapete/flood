@@ -1,19 +1,19 @@
-$modal--background: $another-grey;
+$modal--background: harden($white, 0.5);
 
-$modal--heading--foreground: #e6f0ff;
+$modal--heading--foreground: #000;
 
 $modal--sub-heading--foreground: desaturate(darken($modal--heading--foreground, 15%), 15%);
 
 $modal--transition--duration: 0.2s;
 $modal--transition--scale: 0.85;
 
-$modal--body--foreground: lighten(#6c7e92, 6%);
+$modal--body--foreground: lighten(#000, 6%);
 
-$modal--tab--foreground: #abc2e2;
+$modal--tab--foreground: #000;
 $modal--tab--foreground--active: $blue--lighter;
 $modal--tab--border--active: $blue--lighter;
 
-$modal--overlay--base: #0b1014;
+$modal--overlay--base: #dddddd;
 $modal--overlay: rgba($modal--overlay--base, 0.95);
 
 $modal--content--shadow: #05080a;
