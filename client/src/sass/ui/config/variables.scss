@@ -30,11 +30,11 @@ $input--inverse--border: $darkest-grey--darker;
 $input--inverse--border--hover: darken($darkest-grey--darker, 5%);
 $form--element--inverse--box-shadow: form--element--box-shadow($darkest-grey--hard);
 $input--inverse--foreground: $black;
-$input--inverse--foreground--hover: $grey--lighter;
+$input--inverse--foreground--hover: $blue--lighter;
 $input--inverse--foreground--active: $blue--lighter;
-$input--inverse--foreground--placeholder--active: rgba(lighten($blue, 15%), 0.5);
-$input--inverse--foreground--placeholder: rgba($medium-grey, 0.25);
-$input--inverse--foreground--placeholder--hover: rgba($medium-grey, 0.4);
+$input--inverse--foreground--placeholder--active: $blue--lighter;
+$input--inverse--foreground--placeholder: $blue--lighter;
+$input--inverse--foreground--placeholder--hover: $blue--lighter;
 
 $input--addon--width: $form--element--padding--x * 2 + $spacing--small + $form--element--border-width;
 $input--addon--padding--right: $input--addon--width + $form--element--padding--x / 2;
