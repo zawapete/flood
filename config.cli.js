@@ -36,7 +36,7 @@ const {argv} = require('yargs')
   })
   .option('auth', {
     describe: 'Access control and user management method',
-    choices: ['default', 'none'],
+    choices: ['default', 'httpbasic', 'none'],
   })
   .option('noauth', {
     alias: 'n',
@@ -205,6 +205,8 @@ if (argv.rtsocket != null || argv.rthost != null) {
 let authMethod = 'default';
 if (argv.noauth || argv.auth === 'none') {
   authMethod = 'none';
+} else {
+  authMethod = argv.auth;
 }
 
 let allowedPaths = [];

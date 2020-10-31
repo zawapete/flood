@@ -1,15 +1,17 @@
 import express from 'express';
-import jwt from 'jsonwebtoken';
 import passport from 'passport';
 import rateLimit from 'express-rate-limit';
 
 import type {Response} from 'express';
 
 import ajaxUtil from '../../util/ajaxUtil';
+import getAuthToken from '../../util/authUtil';
+
 import {
   authAuthenticationSchema,
   authRegistrationSchema,
   authUpdateUserSchema,
+  authHTTPBasicAuthenticationSchema,
   AuthVerificationPreloadConfigs,
 } from '../../../shared/schema/api/auth';
 import config from '../../../config';
@@ -39,22 +41,6 @@ router.use(
     max: 200,
   }),
 );
-
-export const getAuthToken = (username: string, res?: Response): string => {
-  const expirationSeconds = 60 * 60 * 24 * 7; // one week
-  const cookieExpiration = Date.now() + expirationSeconds * 1000;
-
-  // Create token if the password matched and no error was thrown.
-  const token = jwt.sign({username}, config.secret, {
-    expiresIn: expirationSeconds,
-  });
-
-  if (res != null) {
-    res.cookie('jwt', token, {expires: new Date(cookieExpiration), httpOnly: true, sameSite: 'strict'});
-  }
-
-  return token;
-};
 
 const sendAuthenticationResponse = (
   res: Response,
@@ -103,7 +89,15 @@ router.post<unknown, unknown, AuthAuthenticationOptions>('/authenticate', (req, 
     return;
   }
 
-  const parsedResult = authAuthenticationSchema.safeParse(req.body);
+  let parsedResult = authAuthenticationSchema.safeParse(null);
+  switch (preloadConfigs.authMethod) {
+    case 'httpbasic':
+      parsedResult = authHTTPBasicAuthenticationSchema(req.header('authorization'));
+      break;
+    case 'default':
+    default:
+      parsedResult = authAuthenticationSchema.safeParse(req.body);
+  }
 
   if (!parsedResult.success) {
     validationError(res, parsedResult.error);
@@ -273,11 +267,18 @@ router.use('/', passport.authenticate('jwt', {session: false}));
  * @summary Clears the session cookie
  * @tags Auth
  * @security User
- * @return {string} 401 - not authenticated or token expired
+ * @return {string} 401 - not authenticated or token expired or auth is httpbasic
  * @return {} 200 - success response
  */
 router.get('/logout', (_req, res) => {
-  res.clearCookie('jwt').send();
+  switch (preloadConfigs.authMethod) {
+    case 'httpbasic':
+      res.clearCookie('jwt').status(401).json('Unauthorized').send();
+      break;
+    case 'default':
+    default:
+      res.clearCookie('jwt').send();
+  }
 });
 
 // All subsequent routes need administrator access.
