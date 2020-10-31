@@ -54,16 +54,16 @@ $foreground: #53718a;
 
 $sidebar--background: harden($white, 0.4);
 $sidebar--foreground: #526780;
-$main-content--background: $light-blue;
+$main-content--background: $dark-blue;
 
-$textbox--background: #242b36;
+$textbox--background: $white;
 $textbox--foreground: #5e728c;
 $textbox--border: #1a2028;
 $textbox--fulfilled--background: $textbox--background;
 $textbox--placeholder: #424d5e;
 $textbox--selection--foreground: #1a2028;
-$textbox--selection--background: $blue--lighter;
-$textbox--active--background: $textbox--background;
+$textbox--selection--background: $grey--harder;
+$textbox--active--background: $green;
 $textbox--active--border: $blue;
 $textbox--active--foreground: $blue;
 $textbox--active--placeholder: $textbox--placeholder;

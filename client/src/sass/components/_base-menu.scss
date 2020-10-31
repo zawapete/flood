@@ -6,10 +6,11 @@ $menu--value: #000;
 $menu--value--active: #000;
 $menu--header--border: rgba($sidebar--background, 0.05);
 $menu--item--background--hover: rgba($main-content--background, 0.4);
-$menu--item--foreground: #fff;
+$menu--item--foreground: $blue;
 $menu--item--foreground--hover: darken($menu--item--foreground, 10%);
 $menu--item--secondary--foreground: lighten($menu--item--foreground, 20%);
 $menu--item--foreground--active: $blue;
+$menu--item--background--active: $green;
 $menu--item--separator--background: $menu--container--border;
 
 .menu {
@@ -68,6 +69,7 @@ $menu--item--separator--background: $menu--container--border;
       }
 
       &.is-selected {
+        background: $menu--item--background--active;
         color: $menu--item--foreground--active;
       }
     }
