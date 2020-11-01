@@ -7,7 +7,7 @@ class ConfigStore {
   baseURI = window.location.pathname.substr(0, window.location.pathname.lastIndexOf('/') + 1);
   authMethod: AuthMethod = 'default';
   pollInterval = 2000;
-  predefinedUsername: string | undefined;
+  predefinedUsername: string = '';
 
   constructor() {
     makeAutoObservable(this);
@@ -16,7 +16,7 @@ class ConfigStore {
   handlePreloadConfigs({authMethod, pollInterval, predefinedUsername}: AuthVerificationPreloadConfigs) {
     this.authMethod = authMethod || 'default';
     this.pollInterval = pollInterval || 2000;
-    this.predefinedUsername = predefinedUsername || undefined;
+    this.predefinedUsername = predefinedUsername;
   }
 }
 

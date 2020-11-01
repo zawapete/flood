@@ -70,7 +70,7 @@ const validationError = (res: Response, err: Error) => {
 const preloadConfigs: AuthVerificationPreloadConfigs = {
   authMethod: config.authMethod,
   pollInterval: config.torrentClientPollInterval,
-  predefinedUsername: undefined,
+  predefinedUsername: '',
 };
 
 router.use('/users', passport.authenticate('jwt', {session: false}), requireAdmin);
@@ -259,7 +259,6 @@ router.use('/verify', (req, res, next) => {
             error: ZodError;
           };
 
-      let predefinedUsername = '';
       switch (config.authMethod) {
         case 'httpbasic':
           parsedResult = authHTTPBasicAuthenticationSchema(req.header('authorization'));
@@ -270,7 +269,7 @@ router.use('/verify', (req, res, next) => {
             return;
           }
 
-          predefinedUsername = parsedResult.data.username;
+          preloadConfigs.predefinedUsername = parsedResult.data.username;
           break;
         case 'default':
         default:
@@ -279,7 +278,6 @@ router.use('/verify', (req, res, next) => {
       const response: AuthVerificationResponse = {
         initialUser: true,
         configs: preloadConfigs,
-        predefinedUsername,
       };
 
       res.json(response);

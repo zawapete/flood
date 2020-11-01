@@ -30,14 +30,13 @@ export type AuthUpdateUserOptions = zodInfer<typeof authUpdateUserSchema>;
 export interface AuthVerificationPreloadConfigs {
   authMethod: AuthMethod;
   pollInterval: number;
-  predefinedUsername: string | undefined;
+  predefinedUsername: string;
 }
 
 // GET /api/auth/verify - success response
 export type AuthVerificationResponse = (
   | {
       initialUser: true;
-      predefinedUsername: string;
     }
   | {
       initialUser: false;

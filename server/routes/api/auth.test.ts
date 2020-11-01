@@ -54,7 +54,7 @@ describe('GET /api/auth/verify (initial)', () => {
         expect(verificationResponse.initialUser).toBe(true);
         expect(verificationResponse.configs).toBeDefined();
         if (verificationResponse.initialUser === true) {
-          expect(verificationResponse.predefinedUsername).toBe('');
+          expect(verificationResponse.configs.predefinedUsername).toBe('');
         }
 
         done();
