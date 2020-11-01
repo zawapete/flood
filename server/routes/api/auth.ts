@@ -139,13 +139,13 @@ router.use('/register', (req, res, next) => {
     handleInitialUser: () => {
       let parsedResult:
         | {
-        success: true;
-        data: Required<zodInfer<typeof authAuthenticationSchema>>;
-      }
+            success: true;
+            data: Required<zodInfer<typeof authAuthenticationSchema>>;
+          }
         | {
-        success: false;
-        error: ZodError;
-      };
+            success: false;
+            error: ZodError;
+          };
 
       switch (config.authMethod) {
         case 'httpbasic':
@@ -162,7 +162,6 @@ router.use('/register', (req, res, next) => {
         case 'default':
         default:
       }
-
 
       next();
     },
