@@ -137,6 +137,33 @@ router.post<unknown, unknown, AuthAuthenticationOptions>('/authenticate', (req, 
 router.use('/register', (req, res, next) => {
   Users.initialUserGate({
     handleInitialUser: () => {
+      let parsedResult:
+        | {
+        success: true;
+        data: Required<zodInfer<typeof authAuthenticationSchema>>;
+      }
+        | {
+        success: false;
+        error: ZodError;
+      };
+
+      switch (config.authMethod) {
+        case 'httpbasic':
+          parsedResult = authHTTPBasicAuthenticationSchema(req.header('authorization'));
+          if (parsedResult.success) {
+            req.body.username = parsedResult.data.username;
+            req.body.password = parsedResult.data.password;
+          } else {
+            res.status(422).send();
+            return;
+          }
+
+          break;
+        case 'default':
+        default:
+      }
+
+
       next();
     },
     handleSubsequentUser: () => {
@@ -175,41 +202,7 @@ router.post<unknown, unknown, AuthRegistrationOptions, {cookie: string}>('/regis
     return;
   }
 
-  let parsedResult:
-    | {
-        success: true;
-        data: Required<zodInfer<typeof authRegistrationSchema>>;
-      }
-    | {
-        success: false;
-        error: ZodError;
-      };
-
-  let httpBasicCredentialsParserResult:
-    | {
-        success: true;
-        data: Required<zodInfer<typeof authAuthenticationSchema>>;
-      }
-    | {
-        success: false;
-        error: ZodError;
-      };
-
-  switch (config.authMethod) {
-    case 'httpbasic':
-      parsedResult = authRegistrationSchema.safeParse(req.body);
-      httpBasicCredentialsParserResult = authHTTPBasicAuthenticationSchema(req.header('authorization'));
-      if (httpBasicCredentialsParserResult.success && parsedResult.success) {
-        parsedResult.data.username = httpBasicCredentialsParserResult.data.username;
-        parsedResult.data.password = httpBasicCredentialsParserResult.data.password;
-      }
-
-      break;
-    case 'default':
-    default:
-      parsedResult = authRegistrationSchema.safeParse(req.body);
-      break;
-  }
+  const parsedResult = authRegistrationSchema.safeParse(req.body);
 
   if (!parsedResult.success) {
     validationError(res, parsedResult.error);

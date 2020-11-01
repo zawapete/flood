@@ -90,6 +90,23 @@ describe('POST /api/auth/register', () => {
       .post('/api/auth/register')
       .send(options)
       .set('Accept', 'application/json')
+      .expect(422)
+      .end((err, res) => {
+        if (err) done(err);
+
+        expect(res.headers['set-cookie']).toBeUndefined();
+
+        done();
+      });
+  });
+
+  it('Register initial user with http basic credentials', (done) => {
+    const options: AuthRegistrationOptions = testAdminUser;
+    request
+      .post('/api/auth/register')
+      .send(options)
+      .set('Accept', 'application/json')
+      .set('Authorization', testAdminHTTPBasicAuth)
       .expect(200)
       .expect('Content-Type', /json/)
       .expect('Set-Cookie', /jwt=.*;/)
