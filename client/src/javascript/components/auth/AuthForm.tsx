@@ -82,7 +82,7 @@ class AuthForm extends React.Component<AuthFormProps, AuthFormStates> {
     }
 
     if (formData.password == null || formData.password === '') {
-      if (ConfigStore.authMethod !== 'httpbasic' && mode !== 'register') {
+      if (ConfigStore.authMethod !== 'header' && mode !== 'register') {
         this.setState({isSubmitting: false, errorMessage: intl.formatMessage({id: 'auth.error.password.empty'})});
         return;
       }
@@ -159,9 +159,9 @@ class AuthForm extends React.Component<AuthFormProps, AuthFormStates> {
                   placeholder="Username"
                   id="username"
                   defaultValue={
-                    ConfigStore.authMethod === 'httpbasic' && mode === 'register' ? ConfigStore.predefinedUsername : ''
+                    ConfigStore.authMethod === 'header' && mode === 'register' ? ConfigStore.predefinedUsername : ''
                   }
-                  disabled={ConfigStore.authMethod === 'httpbasic' && mode === 'register'}
+                  disabled={ConfigStore.authMethod === 'header' && mode === 'register'}
                   autoComplete="username"
                 />
               </FormRow>
@@ -170,8 +170,8 @@ class AuthForm extends React.Component<AuthFormProps, AuthFormStates> {
                   placeholder="Password"
                   id="password"
                   type="password"
-                  defaultValue={ConfigStore.authMethod === 'httpbasic' && mode === 'register' ? '******' : ''}
-                  disabled={ConfigStore.authMethod === 'httpbasic' && mode === 'register'}
+                  defaultValue={ConfigStore.authMethod === 'header' && mode === 'register' ? '******' : ''}
+                  disabled={ConfigStore.authMethod === 'header' && mode === 'register'}
                   autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
                 />
               </FormRow>
