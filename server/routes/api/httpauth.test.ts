@@ -52,6 +52,19 @@ describe('GET /api/auth/verify (initial)', () => {
       .get('/api/auth/verify')
       .send()
       .set('Accept', 'application/json')
+      .expect(401)
+      .end((err, _res) => {
+        if (err) done(err);
+        done();
+      });
+  });
+
+  it('Verify without credential and http basic', (done) => {
+    request
+      .get('/api/auth/verify')
+      .send()
+      .set('Accept', 'application/json')
+      .set('Authorization', testAdminHTTPBasicAuth)
       .expect(200)
       .expect('Content-Type', /json/)
       .end((err, res) => {
@@ -61,6 +74,9 @@ describe('GET /api/auth/verify (initial)', () => {
 
         expect(verificationResponse.initialUser).toBe(true);
         expect(verificationResponse.configs).toBeDefined();
+        if (verificationResponse.initialUser === true) {
+          expect(verificationResponse.predefinedUsername).toBe(testAdminUser.username);
+        }
 
         done();
       });

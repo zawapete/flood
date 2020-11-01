@@ -8,7 +8,7 @@ import type {FormRowItemProps} from './FormRowItem';
 
 type TextboxProps = Pick<
   React.InputHTMLAttributes<HTMLInputElement>,
-  'defaultValue' | 'placeholder' | 'onChange' | 'onClick' | 'autoComplete'
+  'defaultValue' | 'placeholder' | 'onChange' | 'onClick' | 'autoComplete' | 'disabled'
 > & {
   id: string;
   label?: React.ReactNode;
@@ -23,6 +23,7 @@ type TextboxProps = Pick<
 export default class Textbox extends React.Component<TextboxProps> {
   static defaultProps = {
     type: 'text',
+    disabled: false,
   };
 
   getLabel(): React.ReactNode {
@@ -49,6 +50,7 @@ export default class Textbox extends React.Component<TextboxProps> {
       defaultValue,
       placeholder,
       autoComplete,
+      disabled,
       type,
       setRef,
       onChange,
@@ -83,6 +85,7 @@ export default class Textbox extends React.Component<TextboxProps> {
           <input
             className={inputClasses}
             defaultValue={defaultValue}
+            disabled={disabled}
             placeholder={placeholder}
             name={id}
             onChange={onChange}

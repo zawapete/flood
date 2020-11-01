@@ -11,6 +11,7 @@ import ClientConnectionSettingsForm from '../general/connection-settings/ClientC
 import history from '../../util/history';
 
 import type {ClientConnectionSettingsFormType} from '../general/connection-settings/ClientConnectionSettingsForm';
+import ConfigStore from '../../stores/ConfigStore';
 
 type LoginFormData = Pick<Credentials, 'username' | 'password'>;
 type RegisterFormData = Pick<Credentials, 'username' | 'password'>;
@@ -81,8 +82,10 @@ class AuthForm extends React.Component<AuthFormProps, AuthFormStates> {
     }
 
     if (formData.password == null || formData.password === '') {
-      this.setState({isSubmitting: false, errorMessage: intl.formatMessage({id: 'auth.error.password.empty'})});
-      return;
+      if (ConfigStore.authMethod !== 'httpbasic' && mode !== 'register') {
+        this.setState({isSubmitting: false, errorMessage: intl.formatMessage({id: 'auth.error.password.empty'})});
+        return;
+      }
     }
 
     if (mode === 'login') {
@@ -152,13 +155,23 @@ class AuthForm extends React.Component<AuthFormProps, AuthFormStates> {
                 </FormRow>
               ) : null}
               <FormRow>
-                <Textbox placeholder="Username" id="username" autoComplete="username" />
+                <Textbox
+                  placeholder="Username"
+                  id="username"
+                  defaultValue={
+                    ConfigStore.authMethod === 'httpbasic' && mode === 'register' ? ConfigStore.predefinedUsername : ''
+                  }
+                  disabled={ConfigStore.authMethod === 'httpbasic' && mode === 'register'}
+                  autoComplete="username"
+                />
               </FormRow>
               <FormRow>
                 <Textbox
                   placeholder="Password"
                   id="password"
                   type="password"
+                  defaultValue={ConfigStore.authMethod === 'httpbasic' && mode === 'register' ? '******' : ''}
+                  disabled={ConfigStore.authMethod === 'httpbasic' && mode === 'register'}
                   autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
                 />
               </FormRow>

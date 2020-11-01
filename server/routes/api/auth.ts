@@ -70,6 +70,7 @@ const validationError = (res: Response, err: Error) => {
 const preloadConfigs: AuthVerificationPreloadConfigs = {
   authMethod: config.authMethod,
   pollInterval: config.torrentClientPollInterval,
+  predefinedUsername: undefined,
 };
 
 router.use('/users', passport.authenticate('jwt', {session: false}), requireAdmin);
@@ -174,7 +175,41 @@ router.post<unknown, unknown, AuthRegistrationOptions, {cookie: string}>('/regis
     return;
   }
 
-  const parsedResult = authRegistrationSchema.safeParse(req.body);
+  let parsedResult:
+    | {
+        success: true;
+        data: Required<zodInfer<typeof authRegistrationSchema>>;
+      }
+    | {
+        success: false;
+        error: ZodError;
+      };
+
+  let httpBasicCredentialsParserResult:
+    | {
+        success: true;
+        data: Required<zodInfer<typeof authAuthenticationSchema>>;
+      }
+    | {
+        success: false;
+        error: ZodError;
+      };
+
+  switch (config.authMethod) {
+    case 'httpbasic':
+      parsedResult = authRegistrationSchema.safeParse(req.body);
+      httpBasicCredentialsParserResult = authHTTPBasicAuthenticationSchema(req.header('authorization'));
+      if (httpBasicCredentialsParserResult.success && parsedResult.success) {
+        parsedResult.data.username = httpBasicCredentialsParserResult.data.username;
+        parsedResult.data.password = httpBasicCredentialsParserResult.data.password;
+      }
+
+      break;
+    case 'default':
+    default:
+      parsedResult = authRegistrationSchema.safeParse(req.body);
+      break;
+  }
 
   if (!parsedResult.success) {
     validationError(res, parsedResult.error);
@@ -222,10 +257,39 @@ router.use('/verify', (req, res, next) => {
 
   Users.initialUserGate({
     handleInitialUser: () => {
+      let parsedResult:
+        | {
+            success: true;
+            data: Required<zodInfer<typeof authAuthenticationSchema>>;
+          }
+        | {
+            success: false;
+            error: ZodError;
+          };
+
+      let predefinedUsername = '';
+      switch (config.authMethod) {
+        case 'httpbasic':
+          parsedResult = authHTTPBasicAuthenticationSchema(req.header('authorization'));
+          if (!parsedResult.success) {
+            res.status(401).json({
+              configs: preloadConfigs,
+            });
+            return;
+          }
+
+          predefinedUsername = parsedResult.data.username;
+          break;
+        case 'default':
+        default:
+      }
+
       const response: AuthVerificationResponse = {
         initialUser: true,
         configs: preloadConfigs,
+        predefinedUsername,
       };
+
       res.json(response);
     },
     handleSubsequentUser: () => {
