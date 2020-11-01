@@ -4,7 +4,7 @@ import supertest from 'supertest';
 import {AccessLevel} from '../../../shared/schema/constants/Auth';
 
 import app from '../../app';
-import getAuthToken from '../../util/authUtil';
+import {getAuthToken} from '../../util/authUtil';
 
 import type {
   AuthRegistrationOptions,
@@ -127,6 +127,24 @@ describe('POST /api/auth/register', () => {
       .send(options)
       .set('Accept', 'application/json')
       .set('Authorization', testAdminHTTPBasicAuth)
+      .expect(401)
+      .end((err, res) => {
+        if (err) done(err);
+
+        expect(res.headers['set-cookie']).toBeUndefined();
+
+        done();
+      });
+  });
+
+  it('Register subsequent user with admin credentials in http basic and cookie', (done) => {
+    const options: AuthRegistrationOptions = testNonAdminUser;
+    request
+      .post('/api/auth/register')
+      .send(options)
+      .set('Accept', 'application/json')
+      .set('Cookie', [testAdminUserToken])
+      .set('Authorization', testAdminHTTPBasicAuth)
       .expect(200)
       .expect('Content-Type', /json/)
       .expect('Set-Cookie', /jwt=.*;/)
@@ -164,6 +182,24 @@ describe('POST /api/auth/register', () => {
       .send(options)
       .set('Accept', 'application/json')
       .set('Authorization', testNonAdminHTTPBasicAuth)
+      .expect(401)
+      .end((err, res) => {
+        if (err) done(err);
+
+        expect(res.headers['set-cookie']).toBeUndefined();
+
+        done();
+      });
+  });
+
+  it('Register subsequent user with non-admin credentials in http basic and cookie', (done) => {
+    const options: AuthRegistrationOptions = testNonAdminUser;
+    request
+      .post('/api/auth/register')
+      .send(options)
+      .set('Accept', 'application/json')
+      .set('Cookie', [testNonAdminUserToken])
+      .set('Authorization', testNonAdminHTTPBasicAuth)
       .expect(403)
       .end((err, res) => {
         if (err) done(err);
@@ -197,6 +233,24 @@ describe('POST /api/auth/register', () => {
       .post('/api/auth/register')
       .send(options)
       .set('Accept', 'application/json')
+      .set('Authorization', testAdminHTTPBasicAuth)
+      .expect(401)
+      .end((err, res) => {
+        if (err) done(err);
+
+        expect(res.headers['set-cookie']).toBeUndefined();
+
+        done();
+      });
+  });
+
+  it('Register duplicate user with admin credentials in http basic and cookie', (done) => {
+    const options: AuthRegistrationOptions = testNonAdminUser;
+    request
+      .post('/api/auth/register')
+      .send(options)
+      .set('Accept', 'application/json')
+      .set('Cookie', [testAdminUserToken])
       .set('Authorization', testAdminHTTPBasicAuth)
       .expect(500)
       .expect('Content-Type', /json/)
@@ -238,6 +292,27 @@ describe('POST /api/auth/register', () => {
       .post('/api/auth/register?cookie=false')
       .send(options)
       .set('Accept', 'application/json')
+      .set('Authorization', testAdminHTTPBasicAuth)
+      .expect(401)
+      .end((err, res) => {
+        if (err) done(err);
+
+        expect(res.headers['set-cookie']).toBeUndefined();
+
+        done();
+      });
+  });
+
+  it('Register subsequent user with admin credentials expecting no cookie in http basic and cookie', (done) => {
+    const options: AuthRegistrationOptions = {
+      ...testNonAdminUser,
+      username: crypto.randomBytes(8).toString('hex'),
+    };
+    request
+      .post('/api/auth/register?cookie=false')
+      .send(options)
+      .set('Accept', 'application/json')
+      .set('Cookie', [testAdminUserToken])
       .set('Authorization', testAdminHTTPBasicAuth)
       .expect(200)
       .expect('Content-Type', /json/)
@@ -284,6 +359,29 @@ describe('POST /api/auth/register', () => {
       })
       .set('Accept', 'application/json')
       .set('Authorization', testAdminHTTPBasicAuth)
+      .expect(401)
+      .end((err, res) => {
+        if (err) done(err);
+
+        expect(res.headers['set-cookie']).toBeUndefined();
+
+        done();
+      });
+  });
+
+  it('Register subsequent user with admin credentials and malformed data in http basic and cookie', (done) => {
+    request
+      .post('/api/auth/register')
+      .send({
+        ...testNonAdminUser,
+        client: {
+          ...testNonAdminUser.client,
+          client: 'not a client',
+        },
+      })
+      .set('Accept', 'application/json')
+      .set('Cookie', [testAdminUserToken])
+      .set('Authorization', testAdminHTTPBasicAuth)
       .expect(422)
       .expect('Content-Type', /json/)
       .end((err, res) => {
@@ -312,7 +410,7 @@ describe('GET /api/auth/verify', () => {
       });
   });
 
-  it('Verify with valid credentials but not http basic', (done) => {
+  it('Verify with valid credentials', (done) => {
     request
       .get('/api/auth/verify')
       .send()
@@ -328,11 +426,45 @@ describe('GET /api/auth/verify', () => {
       });
   });
 
-  it('Verify with valid credentials (http basic no cookie)', (done) => {
+  it('Verify with valid credentials in http basic', (done) => {
     request
       .get('/api/auth/verify')
       .send()
       .set('Accept', 'application/json')
+      .set('Authorization', testAdminHTTPBasicAuth)
+      .expect(401)
+      .end((err, res) => {
+        if (err) done(err);
+
+        expect(res.body.configs).toBeDefined();
+
+        done();
+      });
+  });
+
+  it('Verify with not matching credentials in http basic and cookie', (done) => {
+    request
+      .get('/api/auth/verify')
+      .send()
+      .set('Accept', 'application/json')
+      .set('Cookie', [testNonAdminUserToken])
+      .set('Authorization', testAdminHTTPBasicAuth)
+      .expect(401)
+      .end((err, res) => {
+        if (err) done(err);
+
+        expect(res.body.configs).toBeDefined();
+
+        done();
+      });
+  });
+
+  it('Verify with valid credentials in http basic and cookie', (done) => {
+    request
+      .get('/api/auth/verify')
+      .send()
+      .set('Accept', 'application/json')
+      .set('Cookie', [testAdminUserToken])
       .set('Authorization', testAdminHTTPBasicAuth)
       .expect(200)
       .end((err, res) => {
@@ -442,7 +574,7 @@ describe('GET /api/auth/logout', () => {
       .get('/api/auth/logout')
       .send()
       .set('Accept', 'application/json')
-      .set('Cookie', [`jwt=${testAdminUserToken}`])
+      .set('Cookie', [testAdminUserToken])
       .expect(401)
       .end((err, _res) => {
         if (err) done(err);
@@ -450,11 +582,25 @@ describe('GET /api/auth/logout', () => {
       });
   });
 
-  it('Logouts with valid credentials http basic auth', (done) => {
+  it('Logouts with credentials in http basic', (done) => {
     request
       .get('/api/auth/logout')
       .send()
       .set('Accept', 'application/json')
+      .set('Authorization', testAdminHTTPBasicAuth)
+      .expect(401)
+      .end((err, _res) => {
+        if (err) done(err);
+        done();
+      });
+  });
+
+  it('Logouts with valid credentials in http basic auth and cookie', (done) => {
+    request
+      .get('/api/auth/logout')
+      .send()
+      .set('Accept', 'application/json')
+      .set('Cookie', [testAdminUserToken])
       .set('Authorization', testAdminHTTPBasicAuth)
       .expect(401)
       .expect('Set-Cookie', /jwt=;/)
@@ -611,6 +757,20 @@ describe('GET /api/auth/users', () => {
       .send()
       .set('Accept', 'application/json')
       .set('Authorization', testNonAdminHTTPBasicAuth)
+      .expect(401)
+      .end((err, _res) => {
+        if (err) done(err);
+        done();
+      });
+  });
+
+  it('Lists user with non-admin credentials in http basic and cookie', (done) => {
+    request
+      .get('/api/auth/users')
+      .send()
+      .set('Accept', 'application/json')
+      .set('Cookie', [testNonAdminUserToken])
+      .set('Authorization', testNonAdminHTTPBasicAuth)
       .expect(403)
       .end((err, res) => {
         if (err) done(err);
@@ -639,6 +799,20 @@ describe('GET /api/auth/users', () => {
       .get('/api/auth/users')
       .send()
       .set('Accept', 'application/json')
+      .set('Authorization', testAdminHTTPBasicAuth)
+      .expect(401)
+      .end((err, _res) => {
+        if (err) done(err);
+        done();
+      });
+  });
+
+  it('Lists user with admin credentials in http basic and cookie', (done) => {
+    request
+      .get('/api/auth/users')
+      .send()
+      .set('Accept', 'application/json')
+      .set('Cookie', [testAdminUserToken])
       .set('Authorization', testAdminHTTPBasicAuth)
       .expect(200)
       .end((err, res) => {
@@ -681,6 +855,20 @@ describe('PATCH /api/auth/users/{username}', () => {
       .send(patch)
       .set('Accept', 'application/json')
       .set('Authorization', testAdminHTTPBasicAuth)
+      .expect(401)
+      .end((err, _res) => {
+        if (err) done(err);
+        done();
+      });
+  });
+
+  it('Updates a nonexistent user with admin credentials in http basic and cookie', (done) => {
+    request
+      .patch(`/api/auth/users/${`nonExistentUser`}`)
+      .send(patch)
+      .set('Accept', 'application/json')
+      .set('Cookie', [testAdminUserToken])
+      .set('Authorization', testAdminHTTPBasicAuth)
       .expect(500)
       .end((err, _res) => {
         if (err) done(err);
@@ -707,6 +895,20 @@ describe('PATCH /api/auth/users/{username}', () => {
       .send(patch)
       .set('Accept', 'application/json')
       .set('Authorization', testNonAdminHTTPBasicAuth)
+      .expect(401)
+      .end((err, _res) => {
+        if (err) done(err);
+        done();
+      });
+  });
+
+  it('Updates an existing user with non-admin credentials in http basic and cookie', (done) => {
+    request
+      .patch(`/api/auth/users/${testAdminUser.username}`)
+      .send(patch)
+      .set('Accept', 'application/json')
+      .set('Cookie', [testNonAdminUserToken])
+      .set('Authorization', testNonAdminHTTPBasicAuth)
       .expect(403)
       .end((err, _res) => {
         if (err) done(err);
@@ -732,6 +934,20 @@ describe('PATCH /api/auth/users/{username}', () => {
       .patch(`/api/auth/users/${testNonAdminUser.username}`)
       .send(patch)
       .set('Accept', 'application/json')
+      .set('Authorization', testAdminHTTPBasicAuth)
+      .expect(401)
+      .end((err, _res) => {
+        if (err) done(err);
+        done();
+      });
+  });
+
+  it('Updates an existing user with admin credentials in http basic and cookie', (done) => {
+    request
+      .patch(`/api/auth/users/${testNonAdminUser.username}`)
+      .send(patch)
+      .set('Accept', 'application/json')
+      .set('Cookie', [testAdminUserToken])
       .set('Authorization', testAdminHTTPBasicAuth)
       .expect(200)
       .end((err, _res) => {
@@ -769,6 +985,25 @@ describe('PATCH /api/auth/users/{username}', () => {
       })
       .set('Accept', 'application/json')
       .set('Authorization', testAdminHTTPBasicAuth)
+      .expect(401)
+      .end((err, _res) => {
+        if (err) done(err);
+        done();
+      });
+  });
+
+  it('Updates an existing user with admin credentials and malformed data in http basic and cookie', (done) => {
+    request
+      .patch(`/api/auth/users/${testNonAdminUser.username}`)
+      .send({
+        client: {
+          ...patch.client,
+          client: 'notClient',
+        },
+      })
+      .set('Accept', 'application/json')
+      .set('Cookie', [testAdminUserToken])
+      .set('Authorization', testAdminHTTPBasicAuth)
       .expect(422)
       .end((err, _res) => {
         if (err) done(err);
@@ -797,6 +1032,20 @@ describe('DELETE /api/auth/users/{username}', () => {
       .send()
       .set('Accept', 'application/json')
       .set('Authorization', testAdminHTTPBasicAuth)
+      .expect(401)
+      .end((err, _res) => {
+        if (err) done(err);
+        done();
+      });
+  });
+
+  it('Deletes a nonexistent user with admin credentials in http basic and cookie', (done) => {
+    request
+      .delete(`/api/auth/users/${`nonExistentUser`}`)
+      .send()
+      .set('Accept', 'application/json')
+      .set('Cookie', [testAdminUserToken])
+      .set('Authorization', testAdminHTTPBasicAuth)
       .expect(500)
       .end((err, _res) => {
         if (err) done(err);
@@ -823,6 +1072,20 @@ describe('DELETE /api/auth/users/{username}', () => {
       .send()
       .set('Accept', 'application/json')
       .set('Authorization', testNonAdminHTTPBasicAuth)
+      .expect(401)
+      .end((err, _res) => {
+        if (err) done(err);
+        done();
+      });
+  });
+
+  it('Deletes an existing user with non-admin credentials in http basic and cookie', (done) => {
+    request
+      .delete(`/api/auth/users/${testAdminUser.username}`)
+      .send()
+      .set('Accept', 'application/json')
+      .set('Cookie', [testNonAdminUserToken])
+      .set('Authorization', testNonAdminHTTPBasicAuth)
       .expect(403)
       .end((err, _res) => {
         if (err) done(err);
@@ -848,6 +1111,20 @@ describe('DELETE /api/auth/users/{username}', () => {
       .delete(`/api/auth/users/${testNonAdminUser.username}`)
       .send()
       .set('Accept', 'application/json')
+      .set('Authorization', testAdminHTTPBasicAuth)
+      .expect(401)
+      .end((err, _res) => {
+        if (err) done(err);
+        done();
+      });
+  });
+
+  it('Deletes an existing user with admin credentials in http basic and cookie', (done) => {
+    request
+      .delete(`/api/auth/users/${testNonAdminUser.username}`)
+      .send()
+      .set('Accept', 'application/json')
+      .set('Cookie', [testAdminUserToken])
       .set('Authorization', testAdminHTTPBasicAuth)
       .expect(200)
       .end((err, res) => {

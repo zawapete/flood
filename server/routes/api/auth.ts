@@ -4,14 +4,15 @@ import rateLimit from 'express-rate-limit';
 
 import type {Response} from 'express';
 
+import {infer as zodInfer, ZodError} from 'zod';
+
 import ajaxUtil from '../../util/ajaxUtil';
-import getAuthToken from '../../util/authUtil';
+import {getAuthToken, authHTTPBasicAuthenticationSchema} from '../../util/authUtil';
 
 import {
   authAuthenticationSchema,
   authRegistrationSchema,
   authUpdateUserSchema,
-  authHTTPBasicAuthenticationSchema,
   AuthVerificationPreloadConfigs,
 } from '../../../shared/schema/api/auth';
 import config from '../../../config';
@@ -89,7 +90,16 @@ router.post<unknown, unknown, AuthAuthenticationOptions>('/authenticate', (req, 
     return;
   }
 
-  let parsedResult = authAuthenticationSchema.safeParse(null);
+  let parsedResult:
+    | {
+        success: true;
+        data: Required<zodInfer<typeof authAuthenticationSchema>>;
+      }
+    | {
+        success: false;
+        error: ZodError;
+      };
+
   switch (preloadConfigs.authMethod) {
     case 'httpbasic':
       parsedResult = authHTTPBasicAuthenticationSchema(req.header('authorization'));
@@ -271,14 +281,7 @@ router.use('/', passport.authenticate('jwt', {session: false}));
  * @return {} 200 - success response
  */
 router.get('/logout', (_req, res) => {
-  switch (preloadConfigs.authMethod) {
-    case 'httpbasic':
-      res.clearCookie('jwt').status(401).json('Unauthorized').send();
-      break;
-    case 'default':
-    default:
-      res.clearCookie('jwt').send();
-  }
+  res.clearCookie('jwt').status(401).json('Unauthorized').send();
 });
 
 // All subsequent routes need administrator access.

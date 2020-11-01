@@ -1,7 +1,7 @@
 import supertest from 'supertest';
 
 import app from '../../app';
-import getAuthToken from '../../util/authUtil';
+import {getAuthToken} from '../../util/authUtil';
 
 import type {FloodSettings} from '../../../shared/types/FloodSettings';
 

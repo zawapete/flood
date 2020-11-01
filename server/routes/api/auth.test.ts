@@ -4,7 +4,7 @@ import supertest from 'supertest';
 import {AccessLevel} from '../../../shared/schema/constants/Auth';
 
 import app from '../../app';
-import getAuthToken from '../../util/authUtil';
+import {getAuthToken} from '../../util/authUtil';
 
 import type {
   AuthRegistrationOptions,
@@ -260,7 +260,7 @@ describe('GET /api/auth/logout', () => {
       .send()
       .set('Accept', 'application/json')
       .set('Cookie', [testAdminUserToken])
-      .expect(200)
+      .expect(401)
       .expect('Set-Cookie', /jwt=;/)
       .end((err, _res) => {
         if (err) done(err);
