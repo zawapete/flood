@@ -1,16 +1,32 @@
 import {Response} from 'express';
 import jwt from 'jsonwebtoken';
-import config from '../../config';
-import {authAuthenticationSchema} from '../../shared/schema/api/auth';
 
-export const httpBasicAuth = (authorization: string) => {
-  const base64 = authorization.replace(/basic /i, '');
-  const credentials = Buffer.from(base64, 'base64').toString().split(':');
-  if (credentials.length !== 2 || credentials[0].length === 0 || credentials[1].length === 0) {
+import type {AuthorizationHeader} from '@shared/schema/Auth';
+
+import config from '../../config';
+
+export const parseAuthorizationHeader = (header?: string): AuthorizationHeader | null => {
+  if (header == null) {
     return null;
   }
 
-  return credentials;
+  const [type, value] = header.split(' ');
+
+  if (type !== 'Basic') {
+    return null;
+  }
+
+  try {
+    const [username, password] = Buffer.from(value, 'base64').toString().split(':');
+
+    return {
+      type,
+      username,
+      password,
+    };
+  } catch (e) {
+    return null;
+  }
 };
 
 export const getAuthToken = (username: string, res?: Response): string => {
@@ -27,17 +43,4 @@ export const getAuthToken = (username: string, res?: Response): string => {
   }
 
   return token;
-};
-
-export const authHTTPBasicAuthenticationSchema = (authorization?: string) => {
-  if (authorization === undefined) {
-    return authAuthenticationSchema.safeParse({});
-  }
-
-  const credentials = httpBasicAuth(authorization);
-  if (credentials === null) {
-    return authAuthenticationSchema.safeParse({});
-  }
-
-  return authAuthenticationSchema.safeParse({username: credentials[0], password: credentials[1]});
 };

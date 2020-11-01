@@ -1,10 +1,10 @@
 module.exports = {
-  displayName: 'auth',
+  displayName: 'auth.header',
   preset: 'ts-jest/presets/js-with-babel',
   rootDir: './../',
   testEnvironment: 'node',
-  testMatch: ['<rootDir>/routes/api/httpauth.test.ts'],
-  setupFilesAfterEnv: ['<rootDir>/.jest/httpauth.setup.js'],
+  testMatch: ['<rootDir>/routes/api/auth.header.test.ts'],
+  setupFilesAfterEnv: ['<rootDir>/.jest/auth.header.setup.js'],
   globals: {
     'ts-jest': {
       isolatedModules: true,

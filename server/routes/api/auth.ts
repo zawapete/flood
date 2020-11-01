@@ -4,11 +4,7 @@ import rateLimit from 'express-rate-limit';
 
 import type {Response} from 'express';
 
-import {infer as zodInfer, ZodError} from 'zod';
-
 import ajaxUtil from '../../util/ajaxUtil';
-import {getAuthToken, authHTTPBasicAuthenticationSchema} from '../../util/authUtil';
-
 import {
   authAuthenticationSchema,
   authRegistrationSchema,
@@ -16,6 +12,7 @@ import {
   AuthVerificationPreloadConfigs,
 } from '../../../shared/schema/api/auth';
 import config from '../../../config';
+import {getAuthToken, parseAuthorizationHeader} from '../../util/authUtil';
 import requireAdmin from '../../middleware/requireAdmin';
 import services from '../../services';
 import Users from '../../models/Users';
@@ -91,31 +88,24 @@ router.post<unknown, unknown, AuthAuthenticationOptions>('/authenticate', (req, 
     return;
   }
 
-  let parsedResult:
-    | {
-        success: true;
-        data: Required<zodInfer<typeof authAuthenticationSchema>>;
-      }
-    | {
-        success: false;
-        error: ZodError;
-      };
+  let credentials: Pick<Credentials, 'username' | 'password'>;
+  if (config.authMethod === 'header') {
+    const {username, password} = parseAuthorizationHeader(req.headers.authorization) || {};
+    if (username === undefined || password === undefined) {
+      res.status(403).send();
+      return;
+    }
 
-  switch (preloadConfigs.authMethod) {
-    case 'httpbasic':
-      parsedResult = authHTTPBasicAuthenticationSchema(req.header('authorization'));
-      break;
-    case 'default':
-    default:
-      parsedResult = authAuthenticationSchema.safeParse(req.body);
+    credentials = {username, password};
+  } else {
+    const parsedResult = authAuthenticationSchema.safeParse(req.body);
+    if (!parsedResult.success) {
+      validationError(res, parsedResult.error);
+      return;
+    }
+
+    credentials = parsedResult.data;
   }
-
-  if (!parsedResult.success) {
-    validationError(res, parsedResult.error);
-    return;
-  }
-
-  const credentials = parsedResult.data;
 
   Users.comparePassword(credentials, (isMatch, level, _err) => {
     if (isMatch === true && level != null) {
@@ -137,30 +127,15 @@ router.post<unknown, unknown, AuthAuthenticationOptions>('/authenticate', (req, 
 router.use('/register', (req, res, next) => {
   Users.initialUserGate({
     handleInitialUser: () => {
-      let parsedResult:
-        | {
-            success: true;
-            data: Required<zodInfer<typeof authAuthenticationSchema>>;
-          }
-        | {
-            success: false;
-            error: ZodError;
-          };
+      if (config.authMethod === 'header') {
+        const {username, password} = parseAuthorizationHeader(req.headers.authorization) || {};
+        if (username === undefined || password === undefined) {
+          res.status(422).send();
+          return;
+        }
 
-      switch (config.authMethod) {
-        case 'httpbasic':
-          parsedResult = authHTTPBasicAuthenticationSchema(req.header('authorization'));
-          if (parsedResult.success) {
-            req.body.username = parsedResult.data.username;
-            req.body.password = parsedResult.data.password;
-          } else {
-            res.status(422).send();
-            return;
-          }
-
-          break;
-        case 'default':
-        default:
+        req.body.username = username;
+        req.body.password = password;
       }
 
       next();
@@ -249,30 +224,14 @@ router.use('/verify', (req, res, next) => {
 
   Users.initialUserGate({
     handleInitialUser: () => {
-      let parsedResult:
-        | {
-            success: true;
-            data: Required<zodInfer<typeof authAuthenticationSchema>>;
-          }
-        | {
-            success: false;
-            error: ZodError;
-          };
+      if (config.authMethod === 'header') {
+        const {username} = parseAuthorizationHeader(req.headers.authorization) || {};
+        if (username === undefined) {
+          res.status(403).send();
+          return;
+        }
 
-      switch (config.authMethod) {
-        case 'httpbasic':
-          parsedResult = authHTTPBasicAuthenticationSchema(req.header('authorization'));
-          if (!parsedResult.success) {
-            res.status(401).json({
-              configs: preloadConfigs,
-            });
-            return;
-          }
-
-          preloadConfigs.predefinedUsername = parsedResult.data.username;
-          break;
-        case 'default':
-        default:
+        preloadConfigs.predefinedUsername = username;
       }
 
       const response: AuthVerificationResponse = {
@@ -331,11 +290,10 @@ router.use('/', passport.authenticate('jwt', {session: false}));
  * @summary Clears the session cookie
  * @tags Auth
  * @security User
- * @return {string} 401 - not authenticated or token expired or auth is httpbasic
- * @return {} 200 - success response
+ * @return {string} 401 - success response
  */
 router.get('/logout', (_req, res) => {
-  res.clearCookie('jwt').status(401).json('Unauthorized').send();
+  res.clearCookie('jwt').status(401).json('Logged out').send();
 });
 
 // All subsequent routes need administrator access.

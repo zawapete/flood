@@ -33,7 +33,7 @@ const testAdminHTTPBasicAuth = `Basic ${Buffer.from(`${testAdminUser.username}:$
   'base64',
 )}`;
 
-const testNotExistingHTTPBasicAuth = `Basic ${Buffer.from('notExstingUser:password').toString('base64')}`;
+const testNotExistingHTTPBasicAuth = `Basic ${Buffer.from('notExistingUser:password').toString('base64')}`;
 
 const testNonAdminUser = {
   username: crypto.randomBytes(8).toString('hex'),
@@ -52,7 +52,7 @@ describe('GET /api/auth/verify (initial)', () => {
       .get('/api/auth/verify')
       .send()
       .set('Accept', 'application/json')
-      .expect(401)
+      .expect(403)
       .end((err, _res) => {
         if (err) done(err);
         done();
@@ -677,8 +677,7 @@ describe('POST /api/auth/authenticate', () => {
         username: 'root',
       })
       .set('Accept', 'application/json')
-      .expect(422)
-      .expect('Content-Type', /json/)
+      .expect(403)
       .end((err, _res) => {
         if (err) done(err);
         done();
@@ -693,8 +692,7 @@ describe('POST /api/auth/authenticate', () => {
         password: 'admin',
       })
       .set('Accept', 'application/json')
-      .expect(422)
-      .expect('Content-Type', /json/)
+      .expect(403)
       .end((err, _res) => {
         if (err) done(err);
         done();
@@ -709,8 +707,7 @@ describe('POST /api/auth/authenticate', () => {
         password: testAdminUser.password,
       })
       .set('Accept', 'application/json')
-      .expect(422)
-      .expect('Content-Type', /json/)
+      .expect(403)
       .end((err, _res) => {
         if (err) done(err);
         done();

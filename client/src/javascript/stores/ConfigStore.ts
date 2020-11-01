@@ -7,7 +7,7 @@ class ConfigStore {
   baseURI = window.location.pathname.substr(0, window.location.pathname.lastIndexOf('/') + 1);
   authMethod: AuthMethod = 'default';
   pollInterval = 2000;
-  predefinedUsername: string = '';
+  predefinedUsername = '';
 
   constructor() {
     makeAutoObservable(this);

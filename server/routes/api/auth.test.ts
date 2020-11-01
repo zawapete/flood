@@ -270,18 +270,6 @@ describe('GET /api/auth/logout', () => {
         done();
       });
   });
-
-  it('Logouts without credential', (done) => {
-    request
-      .get('/api/auth/logout')
-      .send()
-      .set('Accept', 'application/json')
-      .expect(401)
-      .end((err, _res) => {
-        if (err) done(err);
-        done();
-      });
-  });
 });
 
 describe('POST /api/auth/authenticate', () => {
