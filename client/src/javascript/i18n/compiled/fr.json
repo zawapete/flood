@@ -332,7 +332,7 @@
   "auth.input.clear": [
     {
       "type": 0,
-      "value": "Clear"
+      "value": "Effacer"
     }
   ],
   "auth.log.in": [
@@ -407,6 +407,12 @@
       "value": "Non"
     }
   ],
+  "button.retry": [
+    {
+      "type": 0,
+      "value": "Réessayer"
+    }
+  ],
   "button.save": [
     {
       "type": 0,
@@ -425,16 +431,22 @@
       "value": "Ajout..."
     }
   ],
-  "button.test": [
-    {
-      "type": 0,
-      "value": "Tester"
-    }
-  ],
   "button.yes": [
     {
       "type": 0,
       "value": "Oui"
+    }
+  ],
+  "connection-interruption.action.selection.config": [
+    {
+      "type": 0,
+      "value": "Mettre à jour les paramètres de connexion client"
+    }
+  ],
+  "connection-interruption.action.selection.retry": [
+    {
+      "type": 0,
+      "value": "Réessayer avec les paramètres de connexion actuels du client"
     }
   ],
   "connection-interruption.heading": [
@@ -443,22 +455,16 @@
       "value": "Impossible de se connecter au client"
     }
   ],
+  "connection-interruption.not.admin": [
+    {
+      "type": 0,
+      "value": "Veuillez contacter votre administrateur Flood si cela persiste."
+    }
+  ],
   "connection-interruption.verification-error": [
     {
       "type": 0,
       "value": "La connexion n'a pas pu être établie."
-    }
-  ],
-  "connection-interruption.verification-success": [
-    {
-      "type": 0,
-      "value": "Connexion réussie"
-    }
-  ],
-  "connection-interruption.verify-settings-prompt": [
-    {
-      "type": 0,
-      "value": "Vérifions vos paramètres de connexion."
     }
   ],
   "connection.settings.client.select": [
@@ -578,7 +584,49 @@
   "connection.settings.rtorrent.type.tcp.warning": [
     {
       "type": 0,
-      "value": "Exposing rTorrent via TCP may allow privilege escalation."
+      "value": "Exposer rTorrent via TCP peut permettre une élévation des privilèges."
+    }
+  ],
+  "connection.settings.transmission": [
+    {
+      "type": 0,
+      "value": "Transmission"
+    }
+  ],
+  "connection.settings.transmission.password": [
+    {
+      "type": 0,
+      "value": "Mot de passe"
+    }
+  ],
+  "connection.settings.transmission.password.input.placeholder": [
+    {
+      "type": 0,
+      "value": "Mot de passe"
+    }
+  ],
+  "connection.settings.transmission.url": [
+    {
+      "type": 0,
+      "value": "URL"
+    }
+  ],
+  "connection.settings.transmission.url.input.placeholder": [
+    {
+      "type": 0,
+      "value": "URL de l'interface RPC de Transmission"
+    }
+  ],
+  "connection.settings.transmission.username": [
+    {
+      "type": 0,
+      "value": "Nom d'utilisateur"
+    }
+  ],
+  "connection.settings.transmission.username.input.placeholder": [
+    {
+      "type": 0,
+      "value": "Nom d'utilisateur"
     }
   ],
   "connectivity.modal.content": [
@@ -656,7 +704,7 @@
   "feeds.check": [
     {
       "type": 0,
-      "value": "Validate the rule by trying it out. Not saved or sent."
+      "value": "Valider la règle en l'essayant. Non enregistré ou envoyé."
     }
   ],
   "feeds.exclude": [
@@ -987,7 +1035,7 @@
   "filter.status.seeding": [
     {
       "type": 0,
-      "value": "Essaimage"
+      "value": "En source"
     }
   ],
   "filter.status.stopped": [
@@ -1071,7 +1119,7 @@
   "locale.language.translate": [
     {
       "type": 0,
-      "value": "Start to translate"
+      "value": "Commencer à traduire"
     }
   ],
   "mediainfo.execError": [
@@ -1108,6 +1156,12 @@
     {
       "type": 0,
       "value": "Élément de flux en file d'attente"
+    }
+  ],
+  "notification.no.notification": [
+    {
+      "type": 0,
+      "value": "Aucune notification à afficher."
     }
   ],
   "notification.showing": [
@@ -1170,12 +1224,6 @@
       "value": "À propos de Flood"
     }
   ],
-  "settings.bandwidth.slots.download.divider.label": [
-    {
-      "type": 0,
-      "value": "Diviseur pour slots de téléchargement"
-    }
-  ],
   "settings.bandwidth.slots.download.global.label": [
     {
       "type": 0,
@@ -1194,16 +1242,10 @@
       "value": "Configuration des slots"
     }
   ],
-  "settings.bandwidth.slots.upload.divider.label": [
-    {
-      "type": 0,
-      "value": "Diviseur pour slots d'essaimage"
-    }
-  ],
   "settings.bandwidth.slots.upload.global.label": [
     {
       "type": 0,
-      "value": "Slots d'essaimage globaux"
+      "value": "Slots d'envoi global"
     }
   ],
   "settings.bandwidth.slots.upload.label": [
@@ -1221,7 +1263,7 @@
   "settings.bandwidth.transferrate.dropdown.preset.upload.label": [
     {
       "type": 0,
-      "value": "Pré-réglages des vitesses : essaimage"
+      "value": "Pré-réglages des vitesses : Envoi"
     }
   ],
   "settings.bandwidth.transferrate.global.throttle.download": [
@@ -1233,7 +1275,7 @@
   "settings.bandwidth.transferrate.global.throttle.upload": [
     {
       "type": 0,
-      "value": "Limite globale d'essaimage"
+      "value": "Limite globale d'envoi"
     }
   ],
   "settings.bandwidth.transferrate.heading": [
@@ -1311,7 +1353,7 @@
   "settings.connectivity.peers.seeding.max.label": [
     {
       "type": 0,
-      "value": "Limite de pairs en essaimage"
+      "value": "Seuil maximum de pairs en source"
     }
   ],
   "settings.connectivity.peers.seeding.min.label": [
@@ -1512,12 +1554,6 @@
       "value": "Déconnexion"
     }
   ],
-  "sidebar.button.notifications": [
-    {
-      "type": 0,
-      "value": "Notifications"
-    }
-  ],
   "sidebar.button.settings": [
     {
       "type": 0,
@@ -1545,7 +1581,7 @@
   "sidebar.speedlimits.upload": [
     {
       "type": 0,
-      "value": "ESSAIMAGE"
+      "value": "ENVOI"
     }
   ],
   "sidebar.transferdata.downloaded": [
@@ -1557,7 +1593,7 @@
   "sidebar.transferdata.uploaded": [
     {
       "type": 0,
-      "value": "Essaimé"
+      "value": "Envoyé"
     }
   ],
   "speed.unlimited": [
@@ -1961,7 +1997,7 @@
   "torrents.details.general.seeds": [
     {
       "type": 0,
-      "value": "Essaimeurs"
+      "value": "Sources"
     }
   ],
   "torrents.details.general.size": [
@@ -2200,12 +2236,6 @@
       "value": "Définir l'emplacement du torrent"
     }
   ],
-  "torrents.properties.base.path": [
-    {
-      "type": 0,
-      "value": "Chemin de base"
-    }
-  ],
   "torrents.properties.comment": [
     {
       "type": 0,
@@ -2222,6 +2252,12 @@
     {
       "type": 0,
       "value": "Ajouté"
+    }
+  ],
+  "torrents.properties.directory": [
+    {
+      "type": 0,
+      "value": "Emplacement"
     }
   ],
   "torrents.properties.download.speed": [
@@ -2293,7 +2329,7 @@
   "torrents.properties.seeds": [
     {
       "type": 0,
-      "value": "Essaimeurs"
+      "value": "Sources"
     }
   ],
   "torrents.properties.size": [
@@ -2323,13 +2359,13 @@
   "torrents.properties.upload.speed": [
     {
       "type": 0,
-      "value": "Vitesse d'essaimage"
+      "value": "Vitesse d'Envoi"
     }
   ],
   "torrents.properties.upload.total": [
     {
       "type": 0,
-      "value": "Essaimé"
+      "value": "Données envoyées"
     }
   ],
   "torrents.remove": [

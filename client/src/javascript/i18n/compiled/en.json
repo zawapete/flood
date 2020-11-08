@@ -287,6 +287,12 @@
       "value": "crwdns2966:0crwdne2966:0"
     }
   ],
+  "button.retry": [
+    {
+      "type": 0,
+      "value": "crwdns3654:0crwdne3654:0"
+    }
+  ],
   "button.save": [
     {
       "type": 0,
@@ -305,16 +311,22 @@
       "value": "crwdns2974:0crwdne2974:0"
     }
   ],
-  "button.test": [
-    {
-      "type": 0,
-      "value": "crwdns2972:0crwdne2972:0"
-    }
-  ],
   "button.yes": [
     {
       "type": 0,
       "value": "crwdns2976:0crwdne2976:0"
+    }
+  ],
+  "connection-interruption.action.selection.config": [
+    {
+      "type": 0,
+      "value": "crwdns3658:0crwdne3658:0"
+    }
+  ],
+  "connection-interruption.action.selection.retry": [
+    {
+      "type": 0,
+      "value": "crwdns3656:0crwdne3656:0"
     }
   ],
   "connection-interruption.heading": [
@@ -323,22 +335,16 @@
       "value": "crwdns3580:0crwdne3580:0"
     }
   ],
+  "connection-interruption.not.admin": [
+    {
+      "type": 0,
+      "value": "crwdns3660:0crwdne3660:0"
+    }
+  ],
   "connection-interruption.verification-error": [
     {
       "type": 0,
       "value": "crwdns3492:0crwdne3492:0"
-    }
-  ],
-  "connection-interruption.verification-success": [
-    {
-      "type": 0,
-      "value": "crwdns3494:0crwdne3494:0"
-    }
-  ],
-  "connection-interruption.verify-settings-prompt": [
-    {
-      "type": 0,
-      "value": "crwdns3490:0crwdne3490:0"
     }
   ],
   "connection.settings.client.select": [
@@ -459,6 +465,48 @@
     {
       "type": 0,
       "value": "crwdns3652:0crwdne3652:0"
+    }
+  ],
+  "connection.settings.transmission": [
+    {
+      "type": 0,
+      "value": "crwdns3666:0crwdne3666:0"
+    }
+  ],
+  "connection.settings.transmission.password": [
+    {
+      "type": 0,
+      "value": "crwdns3676:0crwdne3676:0"
+    }
+  ],
+  "connection.settings.transmission.password.input.placeholder": [
+    {
+      "type": 0,
+      "value": "crwdns3678:0crwdne3678:0"
+    }
+  ],
+  "connection.settings.transmission.url": [
+    {
+      "type": 0,
+      "value": "crwdns3668:0crwdne3668:0"
+    }
+  ],
+  "connection.settings.transmission.url.input.placeholder": [
+    {
+      "type": 0,
+      "value": "crwdns3670:0crwdne3670:0"
+    }
+  ],
+  "connection.settings.transmission.username": [
+    {
+      "type": 0,
+      "value": "crwdns3672:0crwdne3672:0"
+    }
+  ],
+  "connection.settings.transmission.username.input.placeholder": [
+    {
+      "type": 0,
+      "value": "crwdns3674:0crwdne3674:0"
     }
   ],
   "connectivity.modal.content": [
@@ -969,6 +1017,12 @@
       "value": "crwdns3616:0crwdne3616:0"
     }
   ],
+  "notification.no.notification": [
+    {
+      "type": 0,
+      "value": "crwdns3662:0crwdne3662:0"
+    }
+  ],
   "notification.showing": [
     {
       "type": 0,
@@ -1045,12 +1099,6 @@
       "value": "crwdns3232:0crwdne3232:0"
     }
   ],
-  "settings.bandwidth.slots.download.divider.label": [
-    {
-      "type": 0,
-      "value": "crwdns3126:0crwdne3126:0"
-    }
-  ],
   "settings.bandwidth.slots.download.global.label": [
     {
       "type": 0,
@@ -1067,12 +1115,6 @@
     {
       "type": 0,
       "value": "crwdns3132:0crwdne3132:0"
-    }
-  ],
-  "settings.bandwidth.slots.upload.divider.label": [
-    {
-      "type": 0,
-      "value": "crwdns3134:0crwdne3134:0"
     }
   ],
   "settings.bandwidth.slots.upload.global.label": [
@@ -1385,12 +1427,6 @@
     {
       "type": 0,
       "value": "crwdns3242:0crwdne3242:0"
-    }
-  ],
-  "sidebar.button.notifications": [
-    {
-      "type": 0,
-      "value": "crwdns3236:0crwdne3236:0"
     }
   ],
   "sidebar.button.settings": [
@@ -2071,12 +2107,6 @@
       "value": "crwdns3426:0crwdne3426:0"
     }
   ],
-  "torrents.properties.base.path": [
-    {
-      "type": 0,
-      "value": "crwdns3430:0crwdne3430:0"
-    }
-  ],
   "torrents.properties.comment": [
     {
       "type": 0,
@@ -2093,6 +2123,12 @@
     {
       "type": 0,
       "value": "crwdns3428:0crwdne3428:0"
+    }
+  ],
+  "torrents.properties.directory": [
+    {
+      "type": 0,
+      "value": "crwdns3664:0crwdne3664:0"
     }
   ],
   "torrents.properties.download.speed": [

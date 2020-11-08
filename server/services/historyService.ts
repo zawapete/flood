@@ -20,10 +20,8 @@ class HistoryService extends BaseService<HistoryServiceEvents> {
 
   transferSummary: TransferSummary = {
     downRate: 0,
-    downThrottle: 0,
     downTotal: 0,
     upRate: 0,
-    upThrottle: 0,
     upTotal: 0,
   };
 
@@ -90,10 +88,6 @@ class HistoryService extends BaseService<HistoryServiceEvents> {
       nextEra = snapshot;
     });
 
-    this.fetchCurrentTransferSummary = this.fetchCurrentTransferSummary.bind(this);
-    this.handleFetchTransferSummaryError = this.handleFetchTransferSummaryError.bind(this);
-    this.handleFetchTransferSummarySuccess = this.handleFetchTransferSummarySuccess.bind(this);
-
     this.onServicesUpdated = () => {
       this.fetchCurrentTransferSummary();
     };
@@ -107,18 +101,20 @@ class HistoryService extends BaseService<HistoryServiceEvents> {
     if (this.pollTimeout != null) {
       clearTimeout(this.pollTimeout);
     }
+
+    super.destroy();
   }
 
-  fetchCurrentTransferSummary() {
+  fetchCurrentTransferSummary = () => {
     if (this.pollTimeout != null) {
       clearTimeout(this.pollTimeout);
     }
 
     this.services?.clientGatewayService
       ?.fetchTransferSummary()
-      .then(this.handleFetchTransferSummarySuccess.bind(this))
-      .catch(this.handleFetchTransferSummaryError.bind(this));
-  }
+      .then(this.handleFetchTransferSummarySuccess)
+      .catch(this.handleFetchTransferSummaryError);
+  };
 
   getTransferSummary() {
     return {
@@ -149,7 +145,7 @@ class HistoryService extends BaseService<HistoryServiceEvents> {
     });
   }
 
-  handleFetchTransferSummarySuccess(nextTransferSummary: TransferSummary) {
+  handleFetchTransferSummarySuccess = (nextTransferSummary: TransferSummary) => {
     const summaryDiff = jsonpatch.compare(this.transferSummary, nextTransferSummary);
 
     this.emit('TRANSFER_SUMMARY_DIFF_CHANGE', {
@@ -167,9 +163,9 @@ class HistoryService extends BaseService<HistoryServiceEvents> {
     this.deferFetchTransferSummary();
 
     this.emit('FETCH_TRANSFER_SUMMARY_SUCCESS');
-  }
+  };
 
-  handleFetchTransferSummaryError() {
+  handleFetchTransferSummaryError = () => {
     let nextInterval = config.torrentClientPollInterval || 2000;
 
     // If more than 2 consecutive errors have occurred, then we delay the next request.
@@ -181,7 +177,7 @@ class HistoryService extends BaseService<HistoryServiceEvents> {
     this.deferFetchTransferSummary(nextInterval);
 
     this.emit('FETCH_TRANSFER_SUMMARY_ERROR');
-  }
+  };
 }
 
 export default HistoryService;

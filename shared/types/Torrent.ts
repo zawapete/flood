@@ -27,9 +27,6 @@ export enum TorrentPriority {
 }
 
 export interface TorrentProperties {
-  baseDirectory: string;
-  baseFilename: string;
-  basePath: string;
   bytesDone: number;
   dateAdded: number;
   dateCreated: number;
@@ -39,7 +36,6 @@ export interface TorrentProperties {
   // Torrent ETA (seconds), -1 means infinity
   eta: number;
   hash: string;
-  isMultiFile: boolean;
   isPrivate: boolean;
   message: string;
   name: string;

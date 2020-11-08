@@ -383,6 +383,12 @@
       "value": "لا"
     }
   ],
+  "button.retry": [
+    {
+      "type": 0,
+      "value": "Retry"
+    }
+  ],
   "button.save": [
     {
       "type": 0,
@@ -401,16 +407,22 @@
       "value": "إضافة..."
     }
   ],
-  "button.test": [
-    {
-      "type": 0,
-      "value": "اختبار"
-    }
-  ],
   "button.yes": [
     {
       "type": 0,
       "value": "نعم"
+    }
+  ],
+  "connection-interruption.action.selection.config": [
+    {
+      "type": 0,
+      "value": "Update client connection settings"
+    }
+  ],
+  "connection-interruption.action.selection.retry": [
+    {
+      "type": 0,
+      "value": "Retry with current client connection settings"
     }
   ],
   "connection-interruption.heading": [
@@ -419,22 +431,16 @@
       "value": "لا يمكن الاتصال بالعميل"
     }
   ],
+  "connection-interruption.not.admin": [
+    {
+      "type": 0,
+      "value": "Please contact your Flood administrator if this continues."
+    }
+  ],
   "connection-interruption.verification-error": [
     {
       "type": 0,
       "value": "تعذر التحقق من الاتصال."
-    }
-  ],
-  "connection-interruption.verification-success": [
-    {
-      "type": 0,
-      "value": "تم الاتصال بنجاح"
-    }
-  ],
-  "connection-interruption.verify-settings-prompt": [
-    {
-      "type": 0,
-      "value": "دعونا نتحقق من إعدادات الاتصال الخاصة بك."
     }
   ],
   "connection.settings.client.select": [
@@ -555,6 +561,48 @@
     {
       "type": 0,
       "value": "Exposing rTorrent via TCP may allow privilege escalation."
+    }
+  ],
+  "connection.settings.transmission": [
+    {
+      "type": 0,
+      "value": "Transmission"
+    }
+  ],
+  "connection.settings.transmission.password": [
+    {
+      "type": 0,
+      "value": "Password"
+    }
+  ],
+  "connection.settings.transmission.password.input.placeholder": [
+    {
+      "type": 0,
+      "value": "Password"
+    }
+  ],
+  "connection.settings.transmission.url": [
+    {
+      "type": 0,
+      "value": "URL"
+    }
+  ],
+  "connection.settings.transmission.url.input.placeholder": [
+    {
+      "type": 0,
+      "value": "URL to Transmission RPC interface"
+    }
+  ],
+  "connection.settings.transmission.username": [
+    {
+      "type": 0,
+      "value": "Username"
+    }
+  ],
+  "connection.settings.transmission.username.input.placeholder": [
+    {
+      "type": 0,
+      "value": "Username"
     }
   ],
   "connectivity.modal.content": [
@@ -1075,6 +1123,12 @@
       "value": "قائمة انتظار عنصر التغذية"
     }
   ],
+  "notification.no.notification": [
+    {
+      "type": 0,
+      "value": "No notification to display."
+    }
+  ],
   "notification.showing": [
     {
       "type": 0,
@@ -1135,12 +1189,6 @@
       "value": "حول الفيضان"
     }
   ],
-  "settings.bandwidth.slots.download.divider.label": [
-    {
-      "type": 0,
-      "value": "تنزيل مزود الفتحات"
-    }
-  ],
   "settings.bandwidth.slots.download.global.label": [
     {
       "type": 0,
@@ -1157,12 +1205,6 @@
     {
       "type": 0,
       "value": "توفر الخانة"
-    }
-  ],
-  "settings.bandwidth.slots.upload.divider.label": [
-    {
-      "type": 0,
-      "value": "تحميل مقسم الخانات"
     }
   ],
   "settings.bandwidth.slots.upload.global.label": [
@@ -1475,12 +1517,6 @@
     {
       "type": 0,
       "value": "تسجيل الخروج"
-    }
-  ],
-  "sidebar.button.notifications": [
-    {
-      "type": 0,
-      "value": "الإشعارات"
     }
   ],
   "sidebar.button.settings": [
@@ -2161,12 +2197,6 @@
       "value": "تعيين موقع التورنت"
     }
   ],
-  "torrents.properties.base.path": [
-    {
-      "type": 0,
-      "value": "المسار الأساسي"
-    }
-  ],
   "torrents.properties.comment": [
     {
       "type": 0,
@@ -2183,6 +2213,12 @@
     {
       "type": 0,
       "value": "أضيف"
+    }
+  ],
+  "torrents.properties.directory": [
+    {
+      "type": 0,
+      "value": "Location"
     }
   ],
   "torrents.properties.download.speed": [

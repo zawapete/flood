@@ -40,7 +40,13 @@ router.get('/', (req, res) => {
 
   req.services?.torrentService
     .fetchTorrentList()
-    .then(callback)
+    .then((data) => {
+      if (data == null) {
+        callback(null, new Error());
+      } else {
+        callback(data);
+      }
+    })
     .catch((err) => {
       callback(null, err);
     });
@@ -489,8 +495,15 @@ router.get('/:hash/contents/:indices/data', (req, res) => {
         return res.download(file);
       }
 
+      const archiveRootFolder = sanitizePath(selectedTorrent.directory);
+      const relativeFilePaths = filePathsToDownload.map((filePath) =>
+        filePath.replace(`${archiveRootFolder}${path.sep}`, ''),
+      );
+
       res.attachment(`${selectedTorrent.name}.tar`);
-      return tar.c({}, filePathsToDownload).pipe(res);
+      return tar
+        .c({cwd: archiveRootFolder, follow: false, noDirRecurse: true, portable: true}, relativeFilePaths)
+        .pipe(res);
     });
   } catch (error) {
     return res.status(500).json(error);
@@ -540,17 +553,19 @@ router.get('/:hash/mediainfo', async (req, res) => {
     return;
   }
 
-  const torrent = torrentService.getTorrent(hash);
+  const {directory, name} = torrentService.getTorrent(hash);
 
-  if (torrent == null) {
+  if (directory == null || name == null) {
     callback(null, new Error());
     return;
   }
 
+  const contentPath = fs.existsSync(path.join(directory, name)) ? path.join(directory, name) : directory;
+
   try {
     const mediainfoProcess = childProcess.execFile(
       'mediainfo',
-      [torrent.basePath],
+      [contentPath],
       {maxBuffer: 1024 * 2000},
       (error, stdout, stderr) => {
         if (error) {

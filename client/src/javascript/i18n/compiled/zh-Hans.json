@@ -227,6 +227,12 @@
       "value": "取消"
     }
   ],
+  "button.retry": [
+    {
+      "type": 0,
+      "value": "Retry"
+    }
+  ],
   "button.save": [
     {
       "type": 0,
@@ -245,16 +251,22 @@
       "value": "正在添加..."
     }
   ],
-  "button.test": [
-    {
-      "type": 0,
-      "value": "测试"
-    }
-  ],
   "button.yes": [
     {
       "type": 0,
       "value": "是"
+    }
+  ],
+  "connection-interruption.action.selection.config": [
+    {
+      "type": 0,
+      "value": "Update client connection settings"
+    }
+  ],
+  "connection-interruption.action.selection.retry": [
+    {
+      "type": 0,
+      "value": "Retry with current client connection settings"
     }
   ],
   "connection-interruption.heading": [
@@ -263,22 +275,16 @@
       "value": "无法连接到客户端"
     }
   ],
+  "connection-interruption.not.admin": [
+    {
+      "type": 0,
+      "value": "Please contact your Flood administrator if this continues."
+    }
+  ],
   "connection-interruption.verification-error": [
     {
       "type": 0,
       "value": "无法建立连接。"
-    }
-  ],
-  "connection-interruption.verification-success": [
-    {
-      "type": 0,
-      "value": "连接成功！"
-    }
-  ],
-  "connection-interruption.verify-settings-prompt": [
-    {
-      "type": 0,
-      "value": "检查您的连接设置"
     }
   ],
   "connection.settings.client.select": [
@@ -399,6 +405,48 @@
     {
       "type": 0,
       "value": "Exposing rTorrent via TCP may allow privilege escalation."
+    }
+  ],
+  "connection.settings.transmission": [
+    {
+      "type": 0,
+      "value": "Transmission"
+    }
+  ],
+  "connection.settings.transmission.password": [
+    {
+      "type": 0,
+      "value": "Password"
+    }
+  ],
+  "connection.settings.transmission.password.input.placeholder": [
+    {
+      "type": 0,
+      "value": "Password"
+    }
+  ],
+  "connection.settings.transmission.url": [
+    {
+      "type": 0,
+      "value": "URL"
+    }
+  ],
+  "connection.settings.transmission.url.input.placeholder": [
+    {
+      "type": 0,
+      "value": "URL to Transmission RPC interface"
+    }
+  ],
+  "connection.settings.transmission.username": [
+    {
+      "type": 0,
+      "value": "Username"
+    }
+  ],
+  "connection.settings.transmission.username.input.placeholder": [
+    {
+      "type": 0,
+      "value": "Username"
     }
   ],
   "connectivity.modal.content": [
@@ -893,6 +941,12 @@
       "value": "新闻源排队了"
     }
   ],
+  "notification.no.notification": [
+    {
+      "type": 0,
+      "value": "No notification to display."
+    }
+  ],
   "notification.showing": [
     {
       "type": 0,
@@ -953,12 +1007,6 @@
       "value": "关于Flood"
     }
   ],
-  "settings.bandwidth.slots.download.divider.label": [
-    {
-      "type": 0,
-      "value": "下载槽分配器"
-    }
-  ],
   "settings.bandwidth.slots.download.global.label": [
     {
       "type": 0,
@@ -975,12 +1023,6 @@
     {
       "type": 0,
       "value": "传输槽位限制"
-    }
-  ],
-  "settings.bandwidth.slots.upload.divider.label": [
-    {
-      "type": 0,
-      "value": "上传槽分配器"
     }
   ],
   "settings.bandwidth.slots.upload.global.label": [
@@ -1293,12 +1335,6 @@
     {
       "type": 0,
       "value": "登出"
-    }
-  ],
-  "sidebar.button.notifications": [
-    {
-      "type": 0,
-      "value": "通知"
     }
   ],
   "sidebar.button.settings": [
@@ -1935,12 +1971,6 @@
       "value": "设置种子路径"
     }
   ],
-  "torrents.properties.base.path": [
-    {
-      "type": 0,
-      "value": "位置"
-    }
-  ],
   "torrents.properties.comment": [
     {
       "type": 0,
@@ -1957,6 +1987,12 @@
     {
       "type": 0,
       "value": "添加时间"
+    }
+  ],
+  "torrents.properties.directory": [
+    {
+      "type": 0,
+      "value": "Location"
     }
   ],
   "torrents.properties.download.speed": [

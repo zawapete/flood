@@ -35,11 +35,11 @@ class FeedService extends BaseService {
    */
   async addFeed({url, label, interval}: AddFeedOptions): Promise<Feed> {
     if (typeof url !== 'string' || typeof label !== 'string' || typeof interval !== 'number') {
-      throw new Error('Unprocessable Entity');
+      return Promise.reject();
     }
 
     if (this.db == null) {
-      throw new Error('');
+      return Promise.reject();
     }
 
     const newFeed = await new Promise<Feed>((resolve, reject) => {
@@ -67,21 +67,21 @@ class FeedService extends BaseService {
    */
   async modifyFeed(id: string, {url, label, interval}: ModifyFeedOptions): Promise<void> {
     if (url != null && typeof url !== 'string') {
-      throw new Error();
+      return Promise.reject();
     }
 
     if (label != null && typeof label !== 'string') {
-      throw new Error();
+      return Promise.reject();
     }
 
     if (interval != null && typeof interval !== 'number') {
-      throw new Error();
+      return Promise.reject();
     }
 
     const modifiedFeedReader = this.feedReaders.find((feedReader) => feedReader.getOptions().feedID === id);
 
     if (modifiedFeedReader == null || this.db == null) {
-      throw new Error();
+      return Promise.reject();
     }
 
     // JSON.parse(JSON.stringify()) to remove undefined properties
@@ -132,7 +132,7 @@ class FeedService extends BaseService {
 
   async getAll(): Promise<{feeds: Array<Feed>; rules: Array<Rule>}> {
     if (this.db == null) {
-      throw new Error();
+      return Promise.reject();
     }
 
     return new Promise<{feeds: Array<Feed>; rules: Array<Rule>}>((resolve, reject) => {
@@ -179,7 +179,7 @@ class FeedService extends BaseService {
     const selectedFeedReader = this.feedReaders.find((feedReader) => feedReader.getOptions().feedID === id);
 
     if (selectedFeedReader == null) {
-      throw new Error();
+      return Promise.reject();
     }
 
     const items = selectedFeedReader.getItems();
@@ -227,7 +227,7 @@ class FeedService extends BaseService {
     });
   }
 
-  handleNewItems(feedReaderOptions: FeedReaderOptions, feedItems: Array<FeedItem>): void {
+  handleNewItems = (feedReaderOptions: FeedReaderOptions, feedItems: Array<FeedItem>): void => {
     this.getPreviouslyMatchedUrls()
       .then((previouslyMatchedUrls) => {
         const {feedID, feedLabel} = feedReaderOptions;
@@ -247,7 +247,7 @@ class FeedService extends BaseService {
           itemsToDownload.map(
             async (item): Promise<Array<string>> => {
               const {urls, destination, start, tags, ruleID} = item;
-              await this?.services?.clientGatewayService
+              await this.services?.clientGatewayService
                 ?.addTorrentsByURL({
                   urls,
                   destination,
@@ -285,9 +285,9 @@ class FeedService extends BaseService {
         });
       })
       .catch(console.error);
-  }
+  };
 
-  init() {
+  private init() {
     this.db.find({}, (err: Error, docs: Array<Feed | Rule>) => {
       if (err) {
         return;
@@ -348,7 +348,7 @@ class FeedService extends BaseService {
     });
   }
 
-  loadDatabase(): Datastore {
+  private loadDatabase(): Datastore {
     if (this.db != null) {
       return this.db;
     }
@@ -389,7 +389,7 @@ class FeedService extends BaseService {
     });
   }
 
-  startNewFeed(feed: Feed) {
+  private startNewFeed(feed: Feed) {
     const {_id: feedID, label: feedLabel, url, interval} = feed;
 
     if (typeof feedID !== 'string' || typeof url !== 'string') {
@@ -401,7 +401,7 @@ class FeedService extends BaseService {
     }
 
     this.feedReaders.push(
-      new FeedReader({feedID, feedLabel, url, interval, maxHistory: 100, onNewItems: this.handleNewItems.bind(this)}),
+      new FeedReader({feedID, feedLabel, url, interval, maxHistory: 100, onNewItems: this.handleNewItems}),
     );
 
     return true;

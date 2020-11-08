@@ -368,6 +368,12 @@
       "value": "Нет"
     }
   ],
+  "button.retry": [
+    {
+      "type": 0,
+      "value": "Retry"
+    }
+  ],
   "button.save": [
     {
       "type": 0,
@@ -386,16 +392,22 @@
       "value": "Добавление..."
     }
   ],
-  "button.test": [
-    {
-      "type": 0,
-      "value": "Тест"
-    }
-  ],
   "button.yes": [
     {
       "type": 0,
       "value": "Да"
+    }
+  ],
+  "connection-interruption.action.selection.config": [
+    {
+      "type": 0,
+      "value": "Update client connection settings"
+    }
+  ],
+  "connection-interruption.action.selection.retry": [
+    {
+      "type": 0,
+      "value": "Retry with current client connection settings"
     }
   ],
   "connection-interruption.heading": [
@@ -404,22 +416,16 @@
       "value": "Не удается подключиться к клиенту"
     }
   ],
+  "connection-interruption.not.admin": [
+    {
+      "type": 0,
+      "value": "Please contact your Flood administrator if this continues."
+    }
+  ],
   "connection-interruption.verification-error": [
     {
       "type": 0,
       "value": "Соединение не может быть проверено."
-    }
-  ],
-  "connection-interruption.verification-success": [
-    {
-      "type": 0,
-      "value": "Успешное подключение"
-    }
-  ],
-  "connection-interruption.verify-settings-prompt": [
-    {
-      "type": 0,
-      "value": "Давайте проверим настройки подключения."
     }
   ],
   "connection.settings.client.select": [
@@ -540,6 +546,48 @@
     {
       "type": 0,
       "value": "Exposing rTorrent via TCP may allow privilege escalation."
+    }
+  ],
+  "connection.settings.transmission": [
+    {
+      "type": 0,
+      "value": "Transmission"
+    }
+  ],
+  "connection.settings.transmission.password": [
+    {
+      "type": 0,
+      "value": "Password"
+    }
+  ],
+  "connection.settings.transmission.password.input.placeholder": [
+    {
+      "type": 0,
+      "value": "Password"
+    }
+  ],
+  "connection.settings.transmission.url": [
+    {
+      "type": 0,
+      "value": "URL"
+    }
+  ],
+  "connection.settings.transmission.url.input.placeholder": [
+    {
+      "type": 0,
+      "value": "URL to Transmission RPC interface"
+    }
+  ],
+  "connection.settings.transmission.username": [
+    {
+      "type": 0,
+      "value": "Username"
+    }
+  ],
+  "connection.settings.transmission.username.input.placeholder": [
+    {
+      "type": 0,
+      "value": "Username"
     }
   ],
   "connectivity.modal.content": [
@@ -1060,6 +1108,12 @@
       "value": "Предмет в очереди"
     }
   ],
+  "notification.no.notification": [
+    {
+      "type": 0,
+      "value": "No notification to display."
+    }
+  ],
   "notification.showing": [
     {
       "type": 0,
@@ -1120,12 +1174,6 @@
       "value": "О Flood"
     }
   ],
-  "settings.bandwidth.slots.download.divider.label": [
-    {
-      "type": 0,
-      "value": "Скачать Слоты Разделителя"
-    }
-  ],
   "settings.bandwidth.slots.download.global.label": [
     {
       "type": 0,
@@ -1142,12 +1190,6 @@
     {
       "type": 0,
       "value": "Доступность слота"
-    }
-  ],
-  "settings.bandwidth.slots.upload.divider.label": [
-    {
-      "type": 0,
-      "value": "Разделитель слотов загрузки"
     }
   ],
   "settings.bandwidth.slots.upload.global.label": [
@@ -1460,12 +1502,6 @@
     {
       "type": 0,
       "value": "Выйти"
-    }
-  ],
-  "sidebar.button.notifications": [
-    {
-      "type": 0,
-      "value": "Уведомления"
     }
   ],
   "sidebar.button.settings": [
@@ -2146,12 +2182,6 @@
       "value": "Установить местоположение торрента"
     }
   ],
-  "torrents.properties.base.path": [
-    {
-      "type": 0,
-      "value": "Базовый путь"
-    }
-  ],
   "torrents.properties.comment": [
     {
       "type": 0,
@@ -2168,6 +2198,12 @@
     {
       "type": 0,
       "value": "Добавлено"
+    }
+  ],
+  "torrents.properties.directory": [
+    {
+      "type": 0,
+      "value": "Location"
     }
   ],
   "torrents.properties.download.speed": [

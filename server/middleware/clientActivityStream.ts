@@ -9,6 +9,7 @@ import ServerEvent from '../models/ServerEvent';
 import services from '../services';
 
 import type {DiskUsageSummary} from '../models/DiskUsage';
+import type {TransferHistory} from '../../shared/types/TransferData';
 
 export default async (req: Request<unknown, unknown, unknown, {historySnapshot: HistorySnapshot}>, res: Response) => {
   const {
@@ -22,7 +23,7 @@ export default async (req: Request<unknown, unknown, unknown, {historySnapshot: 
 
   const serviceInstances = services.getAllServices(user);
   const serverEvent = new ServerEvent(res);
-  const fetchTorrentList = serviceInstances.torrentService.fetchTorrentList()?.catch((e) => console.error(e));
+  const fetchTorrentList = serviceInstances.torrentService.fetchTorrentList();
 
   if (serviceInstances.clientGatewayService == null) {
     return;
@@ -42,7 +43,7 @@ export default async (req: Request<unknown, unknown, unknown, {historySnapshot: 
 
   // Emit current state immediately on connection.
   serverEvent.emit(Date.now(), 'CLIENT_CONNECTIVITY_STATUS_CHANGE', {
-    isConnected: !serviceInstances.clientGatewayService.hasError,
+    isConnected: serviceInstances.clientGatewayService.errorCount === 0,
   });
 
   // Disk usage change event
@@ -66,24 +67,26 @@ export default async (req: Request<unknown, unknown, unknown, {historySnapshot: 
     serviceInstances.notificationService.getNotificationCount(),
   );
 
-  handleEvents(serviceInstances.clientGatewayService, 'CLIENT_CONNECTION_STATE_CHANGE', () => {
+  handleEvents(serviceInstances.clientGatewayService, 'CLIENT_CONNECTION_STATE_CHANGE', (isConnected: boolean) => {
     serverEvent.emit(Date.now(), 'CLIENT_CONNECTIVITY_STATUS_CHANGE', {
-      isConnected: !serviceInstances.clientGatewayService?.hasError,
+      isConnected,
     });
   });
 
-  if (serviceInstances.clientGatewayService.hasError) {
+  if (serviceInstances.clientGatewayService.errorCount !== 0) {
     serviceInstances.clientGatewayService.testGateway().catch(console.error);
   }
 
-  // TODO: Handle empty or sub-optimal history states.
   // Get user's specified history snapshot current history.
   serviceInstances.historyService.getHistory({snapshot: historySnapshot}, (snapshot, error) => {
     const {timestamps: lastTimestamps} = snapshot || {timestamps: []};
     const lastTimestamp = lastTimestamps[lastTimestamps.length - 1];
 
-    if (error == null && snapshot != null) {
+    if (error == null && snapshot != null && lastTimestamp != null) {
       serverEvent.emit(lastTimestamp, 'TRANSFER_HISTORY_FULL_UPDATE', snapshot);
+    } else {
+      const fallbackHistory: TransferHistory = {download: [0], upload: [0], timestamps: [Date.now()]};
+      serverEvent.emit(Date.now(), 'TRANSFER_HISTORY_FULL_UPDATE', fallbackHistory);
     }
   });
 

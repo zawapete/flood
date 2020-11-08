@@ -26,10 +26,6 @@ const torrentListMethodCallConfigs = {
     methodCall: 'd.complete=',
     transformValue: booleanTransformer,
   },
-  isMultiFile: {
-    methodCall: 'd.is_multi_file=',
-    transformValue: booleanTransformer,
-  },
   isPrivate: {
     methodCall: 'd.is_private=',
     transformValue: booleanTransformer,
@@ -80,18 +76,6 @@ const torrentListMethodCallConfigs = {
   },
   directory: {
     methodCall: 'd.directory=',
-    transformValue: stringTransformer,
-  },
-  basePath: {
-    methodCall: 'd.base_path=',
-    transformValue: stringTransformer,
-  },
-  baseFilename: {
-    methodCall: 'd.base_filename=',
-    transformValue: stringTransformer,
-  },
-  baseDirectory: {
-    methodCall: 'd.directory_base=',
     transformValue: stringTransformer,
   },
   dateAdded: {

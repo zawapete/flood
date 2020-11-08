@@ -103,53 +103,48 @@ class TorrentMediainfo extends Component<WrappedComponentProps, TorrentMediainfo
   };
 
   render() {
+    const {intl} = this.props;
+
+    let headingMessage = MESSAGES.heading;
     if (this.isFetchingMediainfo) {
-      return (
-        <div className="torrent-details__section mediainfo">
-          <FormattedMessage id={MESSAGES.fetching.id} />
-        </div>
-      );
+      headingMessage = MESSAGES.fetching;
+    } else if (this.fetchMediainfoError) {
+      headingMessage = MESSAGES.execError;
     }
 
-    if (this.fetchMediainfoError) {
-      return (
-        <div className="torrent-details__section mediainfo">
-          <p>
-            <FormattedMessage id={MESSAGES.execError.id} />
-          </p>
-          <pre className="mediainfo__output mediainfo__output--error">{this.fetchMediainfoError.message}</pre>
-        </div>
-      );
-    }
-
-    let tooltipText = this.props.intl.formatMessage(MESSAGES.copy);
-
+    let tooltipMessage = MESSAGES.copy;
     if (this.state.copiedToClipboard) {
-      tooltipText = this.props.intl.formatMessage(MESSAGES.copied);
+      tooltipMessage = MESSAGES.copied;
     }
 
     return (
-      <div className="torrent-details__section mediainfo">
+      <div className="torrent-details__section mediainfo modal__content--nested-scroll__content">
         <div className="mediainfo__toolbar">
           <div className="mediainfo__toolbar__item">
             <span className="torrent-details__table__heading--tertiary">
-              <FormattedMessage id={MESSAGES.heading.id} />
+              <FormattedMessage id={headingMessage.id} />
             </span>
           </div>
-          <Tooltip
-            content={tooltipText}
-            onMouseLeave={this.handleCopyButtonMouseLeave}
-            wrapperClassName="tooltip__wrapper mediainfo__toolbar__item">
-            <Button
-              priority="tertiary"
-              buttonRef={(ref) => {
-                this.copyButtonRef = ref;
-              }}>
-              <ClipboardIcon />
-            </Button>
-          </Tooltip>
+          {this.isFetchingMediainfo || this.fetchMediainfoError ? null : (
+            <Tooltip
+              content={intl.formatMessage(tooltipMessage)}
+              onMouseLeave={this.handleCopyButtonMouseLeave}
+              wrapperClassName="tooltip__wrapper mediainfo__toolbar__item">
+              <Button
+                priority="tertiary"
+                buttonRef={(ref) => {
+                  this.copyButtonRef = ref;
+                }}>
+                <ClipboardIcon />
+              </Button>
+            </Tooltip>
+          )}
         </div>
-        <pre className="mediainfo__output">{this.mediainfo}</pre>
+        {this.fetchMediainfoError ? (
+          <pre className="mediainfo__output mediainfo__output--error">{this.fetchMediainfoError.message}</pre>
+        ) : (
+          <pre className="mediainfo__output">{this.mediainfo}</pre>
+        )}
       </div>
     );
   }

@@ -5,7 +5,7 @@ import path from 'path';
 import sanitize from 'sanitize-filename';
 
 import type {ClientSettings} from '@shared/types/ClientSettings';
-import type {ClientConnectionSettings, RTorrentConnectionSettings} from '@shared/schema/ClientConnectionSettings';
+import type {RTorrentConnectionSettings} from '@shared/schema/ClientConnectionSettings';
 import type {TorrentContent} from '@shared/types/TorrentContent';
 import type {TorrentList, TorrentListSummary, TorrentProperties} from '@shared/types/Torrent';
 import type {TorrentPeer} from '@shared/types/TorrentPeer';
@@ -29,7 +29,6 @@ import type {SetClientSettingsOptions} from '@shared/types/api/client';
 import {createDirectory} from '../../util/fileUtil';
 import ClientGatewayService from '../interfaces/clientGatewayService';
 import ClientRequestManager from './clientRequestManager';
-import scgiUtil from './util/scgiUtil';
 import {getMethodCalls, processMethodCallResponse} from './util/rTorrentMethodCallUtil';
 import {fetchURLToTempFile, saveBufferToTempFile} from '../../util/tempFileUtil';
 import {setCompleted, setTrackers} from '../../util/torrentFileUtil';
@@ -64,7 +63,7 @@ class RTorrentClientGatewayService extends ClientGatewayService {
     start,
   }: AddTorrentByFileOptions): Promise<void> {
     if (!Array.isArray(files)) {
-      throw new Error();
+      return Promise.reject();
     }
 
     const torrentPaths = await Promise.all(
@@ -226,16 +225,79 @@ class RTorrentClientGatewayService extends ClientGatewayService {
         .methodCall('t.multicall', [hash, ''].concat(getMethodCalls(configs)))
         .then(this.processClientRequestSuccess, this.processClientRequestError)
         .then((responses: string[][]) => {
-          return Promise.all(
-            responses.map((response) => processMethodCallResponse(response, configs) as Promise<TorrentTracker>),
-          );
-        }) || Promise.reject()
+          return Promise.all(responses.map((response) => processMethodCallResponse(response, configs)));
+        })
+        .then((processedResponses) =>
+          processedResponses
+            .filter((processedResponse) => processedResponse.isEnabled)
+            .map((processedResponse) => {
+              return {
+                url: processedResponse.url,
+                type: processedResponse.type,
+              };
+            }),
+        ) || Promise.reject()
     );
   }
 
   async moveTorrents({hashes, destination, moveFiles, isBasePath, isCheckHash}: MoveTorrentsOptions): Promise<void> {
-    const hashesToRestart: Array<string> = [];
+    try {
+      await this.stopTorrents({hashes});
+    } catch (e) {
+      return Promise.reject(e);
+    }
 
+    if (moveFiles) {
+      const isMultiFile = await this.clientRequestManager
+        .methodCall('system.multicall', [
+          hashes.map((hash) => {
+            return {
+              methodName: 'd.is_multi_file',
+              params: [hash],
+            };
+          }),
+        ])
+        .then(this.processClientRequestSuccess, this.processClientRequestError)
+        .then((responses: string[][]) => {
+          return responses.map((response) => {
+            const [value] = response;
+            return value === '1';
+          });
+        })
+        .catch(() => undefined);
+
+      if (isMultiFile == null || isMultiFile.length !== hashes.length) {
+        return Promise.reject();
+      }
+
+      hashes.forEach((hash, index) => {
+        const {directory, name} = this.services?.torrentService.getTorrent(hash) || {};
+
+        if (directory == null || name == null) {
+          return;
+        }
+
+        const sourceDirectory = path.resolve(directory);
+        const destDirectory = isMultiFile[index]
+          ? path.resolve(isBasePath ? destination : path.join(destination, name))
+          : path.resolve(destination);
+
+        if (sourceDirectory !== destDirectory) {
+          try {
+            if (isMultiFile[index]) {
+              moveSync(sourceDirectory, destDirectory, {overwrite: true});
+            } else {
+              moveSync(path.join(sourceDirectory, name), path.join(destDirectory, name), {overwrite: true});
+            }
+          } catch (err) {
+            console.error(`Failed to move files to ${destDirectory}.`);
+            console.error(err);
+          }
+        }
+      });
+    }
+
+    const hashesToRestart: Array<string> = [];
     const methodCalls = hashes.reduce((accumulator: MultiMethodCalls, hash) => {
       accumulator.push({
         methodName: isBasePath ? 'd.directory_base.set' : 'd.directory.set',
@@ -249,42 +311,20 @@ class RTorrentClientGatewayService extends ClientGatewayService {
       return accumulator;
     }, []);
 
-    await this.stopTorrents({hashes}).catch((e) => {
-      throw e;
-    });
-
-    await this.clientRequestManager
-      .methodCall('system.multicall', [methodCalls])
-      .then(this.processClientRequestSuccess, this.processClientRequestError)
-      .catch((e) => {
-        throw e;
-      });
-
-    if (moveFiles) {
-      hashes.forEach((hash) => {
-        const sourceBasePath = this.services?.torrentService.getTorrent(hash).basePath;
-        const baseFileName = this.services?.torrentService.getTorrent(hash).baseFilename;
-
-        if (sourceBasePath == null || baseFileName == null) {
-          throw new Error();
-        }
-
-        const destinationFilePath = path.join(destination, baseFileName);
-        if (sourceBasePath !== destinationFilePath) {
-          try {
-            moveSync(sourceBasePath, destinationFilePath, {overwrite: true});
-          } catch (err) {
-            console.error(`Failed to move files to ${destination}.`);
-            console.error(err);
-          }
-        }
-      });
+    try {
+      await this.clientRequestManager
+        .methodCall('system.multicall', [methodCalls])
+        .then(this.processClientRequestSuccess, this.processClientRequestError);
+    } catch (e) {
+      return Promise.reject(e);
     }
 
     if (isCheckHash) {
-      await this.checkTorrents({hashes}).catch((e) => {
-        throw e;
-      });
+      try {
+        await this.checkTorrents({hashes});
+      } catch (e) {
+        return Promise.reject(e);
+      }
     }
 
     return this.startTorrents({hashes: hashesToRestart});
@@ -323,44 +363,47 @@ class RTorrentClientGatewayService extends ClientGatewayService {
     }, []);
 
     return (
-      this.clientRequestManager.methodCall('system.multicall', [methodCalls]).then((response) => {
-        if (deleteData === true) {
-          const torrentCount = hashes.length;
-          const filesToDelete = hashes.reduce((accumulator, _hash, hashIndex) => {
-            const fileList = (response as string[][][][][])[hashIndex][0];
-            const directoryBase = (response as string[][])[hashIndex + torrentCount][0];
+      this.clientRequestManager
+        .methodCall('system.multicall', [methodCalls])
+        .then(this.processClientRequestSuccess, this.processClientRequestError)
+        .then((response) => {
+          if (deleteData === true) {
+            const torrentCount = hashes.length;
+            const filesToDelete = hashes.reduce((accumulator, _hash, hashIndex) => {
+              const fileList = (response as string[][][][][])[hashIndex][0];
+              const directoryBase = (response as string[][])[hashIndex + torrentCount][0];
 
-            const torrentFilesToDelete = fileList.reduce((fileListAccumulator, file) => {
-              // We only look at the first path component returned because
-              // if it's a directory within the torrent, then we'll remove
-              // the entire directory.
-              const filePath = path.join(directoryBase, file[0][0]);
+              const torrentFilesToDelete = fileList.reduce((fileListAccumulator, file) => {
+                // We only look at the first path component returned because
+                // if it's a directory within the torrent, then we'll remove
+                // the entire directory.
+                const filePath = path.join(directoryBase, file[0][0]);
 
-              // filePath might be a directory, so it may have already been
-              // added. If not, we add it.
-              if (!fileListAccumulator.includes(filePath)) {
-                fileListAccumulator.push(filePath);
-              }
+                // filePath might be a directory, so it may have already been
+                // added. If not, we add it.
+                if (!fileListAccumulator.includes(filePath)) {
+                  fileListAccumulator.push(filePath);
+                }
 
-              return fileListAccumulator;
+                return fileListAccumulator;
+              }, [] as Array<string>);
+
+              return accumulator.concat(torrentFilesToDelete);
             }, [] as Array<string>);
 
-            return accumulator.concat(torrentFilesToDelete);
-          }, [] as Array<string>);
-
-          filesToDelete.forEach((file) => {
-            try {
-              if (fs.lstatSync(file).isDirectory()) {
-                fs.rmdirSync(file, {recursive: true});
-              } else {
-                fs.unlinkSync(file);
+            filesToDelete.forEach((file) => {
+              try {
+                if (fs.lstatSync(file).isDirectory()) {
+                  fs.rmdirSync(file, {recursive: true});
+                } else {
+                  fs.unlinkSync(file);
+                }
+              } catch (error) {
+                console.error(`Error deleting file: ${file}\n${error}`);
               }
-            } catch (error) {
-              console.error(`Error deleting file: ${file}\n${error}`);
-            }
-          });
-        }
-      }, this.processClientRequestError) || Promise.reject()
+            });
+          }
+        }) || Promise.reject()
     );
   }
 
@@ -638,6 +681,7 @@ class RTorrentClientGatewayService extends ClientGatewayService {
           break;
         case 'throttleGlobalDownMax':
         case 'throttleGlobalUpMax':
+          // Kb/s to B/s
           methodName = `${configs[property].methodCall}.set`;
           param = (param as ClientSettings[typeof property]) * 1024;
           break;
@@ -672,30 +716,10 @@ class RTorrentClientGatewayService extends ClientGatewayService {
     );
   }
 
-  async testGateway(clientSettings?: ClientConnectionSettings): Promise<void> {
-    if (clientSettings == null) {
-      return this.clientRequestManager
-        .methodCall('system.methodExist', ['system.multicall'])
-        .then(this.processClientRequestSuccess)
-        .catch(this.processClientRequestError);
-    }
-
-    if (clientSettings.client !== 'rTorrent') {
-      return Promise.reject();
-    }
-
-    return scgiUtil.methodCall(
-      clientSettings.type === 'socket'
-        ? {
-            socketPath: clientSettings.socket,
-          }
-        : {
-            host: clientSettings.host,
-            port: clientSettings.port,
-          },
-      'system.methodExist',
-      ['system.multicall'],
-    );
+  async testGateway(): Promise<void> {
+    return this.clientRequestManager
+      .methodCall('system.methodExist', ['system.multicall'])
+      .then(() => this.processClientRequestSuccess(undefined), this.processClientRequestError);
   }
 }
 

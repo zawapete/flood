@@ -395,6 +395,12 @@
       "value": "Nem"
     }
   ],
+  "button.retry": [
+    {
+      "type": 0,
+      "value": "Retry"
+    }
+  ],
   "button.save": [
     {
       "type": 0,
@@ -413,16 +419,22 @@
       "value": "Hozzáadás..."
     }
   ],
-  "button.test": [
-    {
-      "type": 0,
-      "value": "Teszt"
-    }
-  ],
   "button.yes": [
     {
       "type": 0,
       "value": "Igen"
+    }
+  ],
+  "connection-interruption.action.selection.config": [
+    {
+      "type": 0,
+      "value": "Update client connection settings"
+    }
+  ],
+  "connection-interruption.action.selection.retry": [
+    {
+      "type": 0,
+      "value": "Retry with current client connection settings"
     }
   ],
   "connection-interruption.heading": [
@@ -431,22 +443,16 @@
       "value": "Cannot connect to the client"
     }
   ],
+  "connection-interruption.not.admin": [
+    {
+      "type": 0,
+      "value": "Please contact your Flood administrator if this continues."
+    }
+  ],
   "connection-interruption.verification-error": [
     {
       "type": 0,
       "value": "A kapcsolatot nem sikerült ellenőrizni."
-    }
-  ],
-  "connection-interruption.verification-success": [
-    {
-      "type": 0,
-      "value": "Sikeres kapcsolódás"
-    }
-  ],
-  "connection-interruption.verify-settings-prompt": [
-    {
-      "type": 0,
-      "value": "Ellenőrizd a kapcsolat beállításait."
     }
   ],
   "connection.settings.client.select": [
@@ -567,6 +573,48 @@
     {
       "type": 0,
       "value": "Exposing rTorrent via TCP may allow privilege escalation."
+    }
+  ],
+  "connection.settings.transmission": [
+    {
+      "type": 0,
+      "value": "Transmission"
+    }
+  ],
+  "connection.settings.transmission.password": [
+    {
+      "type": 0,
+      "value": "Password"
+    }
+  ],
+  "connection.settings.transmission.password.input.placeholder": [
+    {
+      "type": 0,
+      "value": "Password"
+    }
+  ],
+  "connection.settings.transmission.url": [
+    {
+      "type": 0,
+      "value": "URL"
+    }
+  ],
+  "connection.settings.transmission.url.input.placeholder": [
+    {
+      "type": 0,
+      "value": "URL to Transmission RPC interface"
+    }
+  ],
+  "connection.settings.transmission.username": [
+    {
+      "type": 0,
+      "value": "Username"
+    }
+  ],
+  "connection.settings.transmission.username.input.placeholder": [
+    {
+      "type": 0,
+      "value": "Username"
     }
   ],
   "connectivity.modal.content": [
@@ -1090,6 +1138,12 @@
       "value": "Feed Item Queued"
     }
   ],
+  "notification.no.notification": [
+    {
+      "type": 0,
+      "value": "No notification to display."
+    }
+  ],
   "notification.showing": [
     {
       "type": 0,
@@ -1150,12 +1204,6 @@
       "value": "A Flood-ról"
     }
   ],
-  "settings.bandwidth.slots.download.divider.label": [
-    {
-      "type": 0,
-      "value": "Download Slots Divider"
-    }
-  ],
   "settings.bandwidth.slots.download.global.label": [
     {
       "type": 0,
@@ -1172,12 +1220,6 @@
     {
       "type": 0,
       "value": "Átviteli szálak meghatározása"
-    }
-  ],
-  "settings.bandwidth.slots.upload.divider.label": [
-    {
-      "type": 0,
-      "value": "Upload Slots Divider"
     }
   ],
   "settings.bandwidth.slots.upload.global.label": [
@@ -1490,12 +1532,6 @@
     {
       "type": 0,
       "value": "Kijelentkezés"
-    }
-  ],
-  "sidebar.button.notifications": [
-    {
-      "type": 0,
-      "value": "Értesítések"
     }
   ],
   "sidebar.button.settings": [
@@ -2186,12 +2222,6 @@
       "value": "Torrent áthelyezése másik könyvtárba"
     }
   ],
-  "torrents.properties.base.path": [
-    {
-      "type": 0,
-      "value": "Alap elérési út"
-    }
-  ],
   "torrents.properties.comment": [
     {
       "type": 0,
@@ -2208,6 +2238,12 @@
     {
       "type": 0,
       "value": "Hozzáadva"
+    }
+  ],
+  "torrents.properties.directory": [
+    {
+      "type": 0,
+      "value": "Location"
     }
   ],
   "torrents.properties.download.speed": [
